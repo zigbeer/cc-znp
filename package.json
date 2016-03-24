@@ -21,11 +21,7 @@
   },
   "homepage": "https://github.com/jackchased/cc-znp",
   "dependencies": {
-    "concentrate": "^0.2.3",
-    "dissolve-chunks": "^1.0.2",
     "enum": "^2.3.0",
-    "lodash": "^4.6.1",
-    "q": "^1.4.1",
     "serialport": "^2.0.6",
     "unpi": "^0.9.4"
   },
