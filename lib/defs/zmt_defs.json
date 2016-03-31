@@ -268,7 +268,7 @@
         "srngGen": 76,
         "bindAddEntry": 77
     },
-    "DEBUG": {
+    "DBG": {
         "setDebugThreshold": 0,
         "msg": 128
     },
