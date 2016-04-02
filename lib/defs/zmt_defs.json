@@ -153,8 +153,8 @@
         "mgmtBindReq": 51,
         "mgmtLeaveReq": 52,
         "mgmtDirectJoinReq": 53,
-        "mgmtPermitJoinRequest": 54,
-        "mgmtNwkUpdateRequest": 55,
+        "mgmtPermitJoinReq": 54,
+        "mgmtNwkUpdateReq": 55,
         "msgCbRegister": 62,
         "msgCbRemove": 63,
         "startupFromApp": 64,
@@ -269,7 +269,7 @@
         "bindAddEntry": 77
     },
     "DBG": {
-        "setDebugThreshold": 0,
+        "setThreshold": 0,
         "msg": 128
     },
     "APP": {

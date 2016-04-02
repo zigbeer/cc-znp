@@ -245,7 +245,16 @@ ccznp.on('AREQ', function (data) {
 
 <a name="ApiTables"></a>
 ## 8. Z-Stack MT API Reference Tables  
+* [ccznp.sysRequest APIs](#SysTable)  
+* [ccznp.macRequest APIs](#MacTable)  
+* [ccznp.afRequest APIs](#AfTable)  
+* [ccznp.zdoRequest APIs](#ZdoTable)  
+* [ccznp.sapiRequest APIs](#SapiTable)  
+* [ccznp.utilRequest APIs](#UtilTable)  
+* [ccznp.dbgRequest APIs](#DbgTable)  
+* [ccznp.appRequest APIs](#AppTable)  
 
+*************************************************
 <a name="SysTable"></a>
 ### 8.1 ccznp.sysRequest APIs  
 
@@ -336,3 +345,234 @@ ccznp.on('AREQ', function (data) {
     | MAC_START_CNF         | startCnf        | AREQ | status                                                                                                                                                                                                                                           |
     | MAC_RX_ENABLE_CNF     | rxEnableCnf     | AREQ | status                                                                                                                                                                                                                                           |
     | MAC_PURGE_CNF         | purgeCnf        | AREQ | status, handle                                                                                                                                                                                                                                   |
+
+<a name="AfTable"></a>
+### 8.3 ccznp.afRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs          | cc-znp APIs       | Type | Arguments                                                                                                                         | Result                         |
+    |-------------------------|-------------------|------|-----------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+    | AF_REGISTER             | register          | SREQ | endpoint, appprofid, appdeviceid, appdevver, latencyreq, appnuminclusters, appinclusterlist, appnumoutclusters, appoutclusterlist | status                         |
+    | AF_DATA_REQUEST         | dataRequest       | SREQ | dstaddr, destendpoint, srcendpoint, clusterid, transid, options, radius, len, data                                                | status                         |
+    | AF_DATA_REQUEST_EXT     | dataRequestExt    | SREQ | dstaddrmode, dstaddr, destendpoint, dstpanid, srcendpoint, clusterid, transid, options, radius, len, data                         | status                         |
+    | AF_DATA_REQUEST_SRC_RTG | dataRequestSrcRtg | SREQ | dstaddr, destendpoint, srcendpoint, clusterid, transid, options, radius, relaycount, relaylist, len, data                         | status                         |
+    | AF_INTER_PAN_CTL        | interPanCtl       | SREQ | cmd, data                                                                                                                         | status                         |
+    | AF_DATA_STORE           | dataStore         | SREQ | index, length, data                                                                                                               | status                         |
+    | AF_DATA_RETRIEVE        | dataRetrieve      | SREQ | timestamp, index, length                                                                                                          | status, length, data           |
+    | AF_APSF_CONFIG_SET      | apsfConfigSet     | SREQ | endpoint, framedelay, windowsize                                                                                                  | status                         |
+    |                         | apsfConfigGet     | SREQ | endpoint                                                                                                                          | framedelay, windowsize, nomean |
+    |                         | delete            | SREQ | endpoint                                                                                                                          | status                         |
+
+* Callbacks  
+
+    | ZigBee MT APIs      | cc-znp APIs    | Type | Result                                                                                                                                                     |
+    |---------------------|----------------|------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | AF_DATA_CONFIRM     | dataConfirm    | AREQ | status, endpoint, transid                                                                                                                                  |
+    | AF_REFLECT_ERROR    | reflectError   | AREQ | status, endpoint, transid, dstaddrmode, dstaddr                                                                                                            |
+    | AF_INCOMING_MSG     | incomingMsg    | AREQ | groupid, clusterid, srcaddr, srcendpoint, dstendpoint, wasbroadcast, linkquality, securityuse, timestamp, transseqnumber, len, data                        |
+    | AF_INCOMING_MSG_EXT | incomingMsgExt | AREQ | groupid, clusterid, srcaddrmode, srcaddr, srcendpoint, srcpanid, dstendpoint, wasbroadcast, linkquality, securityuse, timestamp, transseqnumber, len, data |
+
+<a name="ZdoTable"></a>
+### 8.4 ccznp.zdoRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs                   | cc-znp APIs              | Type | Arguments                                                                                                         | Result                                                                                                   |
+    |----------------------------------|--------------------------|------|-------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+    | ZDO_NWK_ADDR_REQ                 | nwkAddrReq               | SREQ | ieeeaddr, reqtype, startindex                                                                                     | status                                                                                                   |
+    | ZDO_IEEE_ADDR_REQ                | ieeeAddrReq              | SREQ | shortaddr, reqtype, startindex                                                                                    | status                                                                                                   |
+    | ZDO_NODE_DESC_REQ                | nodeDescReq              | SREQ | dstaddr, nwkaddrofinterest                                                                                        | status                                                                                                   |
+    | ZDO_POWER_DESC_REQ               | powerDescReq             | SREQ | dstaddr, nwkaddrofinterest                                                                                        | status                                                                                                   |
+    | ZDO_SIMPLE_DESC_REQ              | simpleDescReq            | SREQ | dstaddr, nwkaddrofinterest, endpoint                                                                              | status                                                                                                   |
+    | ZDO_ACTIVE_EP_REQ                | activeEpReq              | SREQ | dstaddr, nwkaddrofinterest                                                                                        | status                                                                                                   |
+    | ZDO_MATCH_DESC_REQ               | matchDescReq             | SREQ | dstaddr, nwkaddrofinterest, profileid, numinclusters, inclusterlist, numoutclusters, outclusterlist               | status                                                                                                   |
+    | ZDO_COMPLEX_DESC_REQ             | complexDescReq           | SREQ | dstaddr, nwkaddrofinterest                                                                                        | status                                                                                                   |
+    | ZDO_USER_DESC_REQ                | userDescReq              | SREQ | dstaddr, nwkaddrofinterest                                                                                        | status                                                                                                   |
+    | ZDO_END_DEVICE_ANNCE             | endDeviceAnnce           | SREQ | nwkaddr, ieeeaddr, capability                                                                                     | status                                                                                                   |
+    | ZDO_USER_DESC_SET                | userDescSet              | SREQ | dstaddr, nwkaddrofinterest, descriptor_len, userdescriptor                                                        | status                                                                                                   |
+    | ZDO_SERVER_DISC_REQ              | serverDiscReq            | SREQ | servermask                                                                                                        | status                                                                                                   |
+    | ZDO_END_DEVICE_BIND_REQ          | endDeviceBindReq         | SREQ | dstaddr, localcoord, localieee, endpoint, profileid, numinclusters, inclusterlist, numoutclusters, outclusterlist | status                                                                                                   |
+    | ZDO_BIND_REQ                     | bindReq                  | SREQ | dstaddr, srcaddr, srcendpoint, clusterid, dstaddrmode, addr_short_long, dstendpoint                               | status                                                                                                   |
+    | ZDO_UNBIND_REQ                   | unbindReq                | SREQ | dstaddr, srcaddr, srcendpoint, clusterid, dstaddrmode, addr_short_long, dstendpoint                               | status                                                                                                   |
+    | ZDO_MGMT_NWK_DISC_REQ            | mgmtNwkDiscReq           | SREQ | dstaddr, scanchannels, scanduration, startindex                                                                   | status                                                                                                   |
+    | ZDO_MGMT_LQI_REQ                 | mgmtLqiReq               | SREQ | dstaddr, startindex                                                                                               | status                                                                                                   |
+    | ZDO_MGMT_RTG_REQ                 | mgmtRtgReq               | SREQ | dstaddr, startindex                                                                                               | status                                                                                                   |
+    | ZDO_MGMT_BIND_REQ                | mgmtBindReq              | SREQ | dstaddr, startindex                                                                                               | status                                                                                                   |
+    | ZDO_MGMT_LEAVE_REQ               | mgmtLeaveReq             | SREQ | dstaddr, deviceaddress, removechildren_rejoin                                                                     | status                                                                                                   |
+    | ZDO_MGMT_DIRECT_JOIN_REQ         | mgmtDirectJoinReq        | SREQ | dstaddr, deviceaddr, capinfo                                                                                      | status                                                                                                   |
+    | ZDO_MGMT_PERMIT_JOIN_REQ         | mgmtPermitJoinReq        | SREQ | dstaddr, duration, tcsignificance                                                                                 | status                                                                                                   |
+    | ZDO_MGMT_NWK_UPDATE_REQ          | mgmtNwkUpdateReq         | SREQ | dstaddr, dstaddrmode, channelmask, scanduration, scancount, nwkmanageraddr                                        | status                                                                                                   |
+    | ZDO_MSG_CB_REGISTER              | msgCbRegister            | SREQ | clusterid                                                                                                         | status                                                                                                   |
+    | ZDO_MSG_CB_REMOVE                | msgCbRemove              | SREQ | clusterid                                                                                                         | status                                                                                                   |
+    | ZDO_STARTUP_FROM_APP             | startupFromApp           | SREQ | startdelay                                                                                                        | status                                                                                                   |
+    | ZDO_SET_LINK_KEY                 | setLinkKey               | SREQ | shortaddr, ieeeaddr, linkkey                                                                                      | status                                                                                                   |
+    | ZDO_REMOVE_LINK_KEY              | removeLinkKey            | SREQ | ieeeaddr                                                                                                          | status                                                                                                   |
+    | ZDO_GET_LINK_KEY                 | getLinkKey               | SREQ | ieeeaddr                                                                                                          | status, ieeeaddr, linkkeydata                                                                            |
+    | ZDO_NWK_DISCOVERY_REQ            | nwkDiscoveryReq          | SREQ | scanchannels, scanduration                                                                                        | status                                                                                                   |
+    | ZDO_JOIN_REQ                     | joinReq                  | SREQ | logicalchannel, panid, extendedpanid, chosenparent, parentdepth, stackprofile                                     | status                                                                                                   |
+    | ZDO_SEC_ADD_LINK_KEY             | secAddLinkKey            | SREQ | shortaddr, extaddr, linkkey                                                                                       | status                                                                                                   |
+    | ZDO_SEC_ENTRY_LOOKUP_EXT         | secEntryLookupExt        | SREQ | extaddr                                                                                                           | status, ami, keynvid, authenticateoption                                                                 |
+    | ZDO_EXT_ROUTE_DISC               | extRouteDisc             | SREQ | dstAddr, options, radius                                                                                          | status                                                                                                   |
+    | ZDO_EXT_ROUTE_CHECK              | extRouteCheck            | SREQ | dstaddr, rtstatus, options                                                                                        | status                                                                                                   |
+    | ZDO_EXT_REMOVE_GROUP             | extRemoveGroup           | SREQ | endpoint, groupid                                                                                                 | status                                                                                                   |
+    | ZDO_EXT_REMOVE_ALL_GROUP         | extRemoveAllGroup        | SREQ | endpoint                                                                                                          | status                                                                                                   |
+    | ZDO_EXT_FIND_ALL_GROUPS_ENDPOINT | extFindAllGroupsEndpoint | SREQ | endpoint                                                                                                          | groups, grouplist                                                                                        |
+    | ZDO_EXT_FIND_GROUP               | extFindGroup             | SREQ | endpoint, groupid                                                                                                 | status, groupid, namelen, groupname                                                                      |
+    | ZDO_EXT_ADD_GROUP                | extAddGroup              | SREQ | endpoint, groupid, namelen, groupname                                                                             | status                                                                                                   |
+    | ZDO_EXT_COUNT_ALL_GROUPS         | extCountAllGroups        | SREQ | _none_                                                                                                            | status                                                                                                   |
+    | ZDO_EXT_RX_IDLE                  | extRxIdle                | SREQ | setflag, setvalue                                                                                                 | status                                                                                                   |
+    | ZDO_EXT_UPDATE_NWK_KEY           | extUpdateNwkKey          | SREQ | dstaddr, keyseqnum                                                                                                | status                                                                                                   |
+    | ZDO_EXT_SWITCH_NWK_KEY           | extSwitchNwkKey          | SREQ | dstaddr, keyseqnum                                                                                                | status                                                                                                   |
+    | ZDO_EXT_NWK_INFO                 | extNwkInfo               | SREQ | _none_                                                                                                            | nwkdevaddress, devstate, nwkpanid, nwkcoordaddress, extendedpanid, nwkcoordextaddress, nwklogicalchannel |
+    | ZDO_EXT_SEC_APS_REMOVE_REQ       | extSecApsRemoveReq       | SREQ | parentaddr, nwkaddr, extaddr                                                                                      | status                                                                                                   |
+    | ZDO_FORCE_CONCENTRATOR_CHANGE    | forceConcentratorChange  | SREQ | _none_                                                                                                            | _none_                                                                                                   |
+    | ZDO_EXT_SET_PARAMS               | extSetParams             | SREQ | usemulticast                                                                                                      | _none_                                                                                                   |
+    |                                  | endDeviceTimeoutReq      | SREQ | parentaddr, reqrimeout                                                                                            | status                                                                                                   |
+    |                                  | sendData                 | SREQ | shortaddr, transseq, cmd, len, buf                                                                                | status                                                                                                   |
+    |                                  | nwkAddrOfInterestReq     | SREQ | shortaddr, nwkaddr, cmd                                                                                           | status                                                                                                   |
+
+* Callbacks  
+
+    | ZigBee MT APIs           | cc-znp APIs       | Type | Result                                                                                                                                                                                              |
+    |--------------------------|-------------------|------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | ZDO_NWK_ADDR_RSP         | nwkAddrRsp        | AREQ | status, ieeeaddr, nwkaddr, startindex, numassocdev, assocdevlist                                                                                                                                    |
+    | ZDO_IEEE_ADDR_RSP        | ieeeAddrRsp       | AREQ | status, ieeeaddr, nwkaddr, startindex, numassocdev, assocdevlist                                                                                                                                    |
+    | ZDO_NODE_DESC_RSP        | nodeDescRsp       | AREQ | srcaddr, status, nwkaddr, logicaltype_cmplxdescavai_userdescavai, apsflags_freqband, maccapflags, manufacturercode, maxbuffersize, maxintransfersize, servermask, maxouttransfersize, descriptorcap |
+    | ZDO_POWER_DESC_RSP       | powerDescRsp      | AREQ | srcaddr, status, nwkaddr, currentpowermode_avaipowersrc, currentpowersrc_currentpowersrclevel                                                                                                       |
+    | ZDO_SIMPLE_DESC_RSP      | simpleDescRsp     | AREQ | srcaddr, status, nwkaddr, len, endpoint, profileid, deviceid, deviceversion, numinclusters, inclusterlist, numoutclusters, outclusterlist                                                           |
+    | ZDO_ACTIVE_EP_RSP        | activeEpRsp       | AREQ | srcaddr, status, nwkaddr, activeepcount, activeeplist                                                                                                                                               |
+    | ZDO_MATCH_DESC_RSP       | matchDescRsp      | AREQ | srcaddr, status, nwkaddr, matchlength, matchlist                                                                                                                                                    |
+    | ZDO_COMPLEX_DESC_RSP     | complexDescRsp    | AREQ | srcaddr, status, nwkaddr, complexlength, complexdesclist                                                                                                                                            |
+    | ZDO_USER_DESC_RSP        | userDescRsp       | AREQ | srcaddr, status, nwkaddr, userlength, userdescriptor                                                                                                                                                |
+    | ZDO_USER_DESC_CONF       | userDescConf      | AREQ | srcaddr, status, nwkaddr                                                                                                                                                                            |
+    | ZDO_SERVER_DISC_RSP      | serverDiscRsp     | AREQ | srcaddr, status, servermask                                                                                                                                                                         |
+    | ZDO_END_DEVICE_BIND_RSP  | endDeviceBindRsp  | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_BIND_RSP             | bindRsp           | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_UNBIND_RSP           | unbindRsp         | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_MGMT_NWK_DISC_RSP    | mgmtNwkDiscRsp    | AREQ | srcaddr, status, networkcount, startindex, networklistcount, networklist                                                                                                                            |
+    | ZDO_MGMT_LQI_RSP         | mgmtLqiRsp        | AREQ | srcaddr, status, neighbortableentries, startindex, neighborlqilistcount, neighborlqilist                                                                                                            |
+    | ZDO_MGMT_RTG_RSP         | mgmtRtgRsp        | AREQ | srcaddr, status, routingtableentries, startindex, routingtablelistcount, routingtablelist                                                                                                           |
+    | ZDO_MGMT_BIND_RSP        | mgmtBindRsp       | AREQ | srcaddr, status, bindingtableentries, startindex, bindingtablelistcount, bindingtablelist                                                                                                           |
+    | ZDO_MGMT_LEAVE_RSP       | mgmtLeaveRsp      | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_MGMT_DIRECT_JOIN_RSP | mgmtDirectJoinRsp | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_MGMT_PERMIT_JOIN_RSP | mgmtPermitJoinRsp | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_STATE_CHANGE_IND     | stateChangeInd    | AREQ | state                                                                                                                                                                                               |
+    | ZDO_END_DEVICE_ANNCE_IND | endDeviceAnnceInd | AREQ | srcaddr, nwkaddr, ieeeaddr, capabilities                                                                                                                                                            |
+    | ZDO_MATCH_DESC_RSP_SENT  | matchDescRspSent  | AREQ | nwkaddr, numinclusters, inclusterlist, numoutclusters, outclusterlist                                                                                                                               |
+    | ZDO_STATUS_ERROR_RSP     | statusErrorRsp    | AREQ | srcaddr, status                                                                                                                                                                                     |
+    | ZDO_SRC_RTG_IND          | srcRtgInd         | AREQ | dstaddr, relaycount, relaylist                                                                                                                                                                      |
+    | ZDO_BEACON_NOTIFY_IND    | beacon_notify_ind | AREQ | beaconcount, beaconlist                                                                                                                                                                             |
+    | ZDO_JOIN_CNF             | joinCnf           | AREQ | status, deviceaddress, parentaddress                                                                                                                                                                |
+    | ZDO_NWK_DISCOVERY_CNF    | nwkDiscoveryCnf   | AREQ | status                                                                                                                                                                                              |
+    | ZDO_LEAVE_IND            | leaveInd          | AREQ | srcaddr, extaddr, request, removechildren, rejoin                                                                                                                                                   |
+    | ZDO_MSG_CB_INCOMING      | msgCbIncoming     | AREQ | srcaddr, wasbroadcast, clusterid, securityuse, seqnum, macdstaddr, msgdata                                                                                                                          |
+    |                          | tcDeviceInd       | AREQ | nwkaddr, extaddr, parentaddr                                                                                                                                                                        |
+    |                          | permitJoinInd     | AREQ | duration                                                                                                                                                                                            |
+
+<a name="SapiTable"></a>
+### 8.5 ccznp.sapiRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs            | cc-znp APIs          | Type | Arguments                                                                   | Result                       |
+    |---------------------------|----------------------|------|-----------------------------------------------------------------------------|------------------------------|
+    | ZB_SYSTEM_RESET           | systemReset          | AREQ | _none_                                                                      | _none_                       |
+    | ZB_START_REQUEST          | startRequest         | SREQ | _none_                                                                      | _none_                       |
+    | ZB_PERMIT_JOINING_REQUEST | permitJoiningRequest | SREQ | destination, timeout                                                        | status                       |
+    | ZB_BIND_DEVICE            | bindDevice           | SREQ | action, commandid, destination                                              | _none_                       |
+    | ZB_ALLOW_BIND             | allowBind            | SREQ | timeout                                                                     | _none_                       |
+    | ZB_SEND_DATA_REQUEST      | sendDataRequest      | SREQ | destination, commandid, handle, txoptions, radius, payloadlen, payloadvalue | _none_                       |
+    | ZB_READ_CONFIGURATION     | readConfiguration    | SREQ | configid                                                                    | status, configid, len, value |
+    | ZB_WRITE_CONFIGURATION    | writeConfiguration   | SREQ | configid, len, value                                                        | status                       |
+    | ZB_GET_DEVICE_INFO        | getDeviceInfo        | SREQ | param                                                                       | param, value                 |
+    | ZB_FIND_DEVICE_REQUEST    | findDeviceRequest    | SREQ | searchKey                                                                   | _none_                       |
+
+* Callbacks  
+
+    | ZigBee MT APIs             | cc-znp APIs           | Type | Result                        |
+    |----------------------------|-----------------------|------|-------------------------------|
+    | ZB_START_CONFIRM           | startConfirm          | AREQ | status                        |
+    | ZB_BIND_CONFIRM            | bindConfirm           | AREQ | commandid, status             |
+    | ZB_ALLOW_BIND_CONFIRM      | allowBindConfirm      | AREQ | source                        |
+    | ZB_SEND_DATA_CONFIRM       | sendDataConfirm       | AREQ | handle, status                |
+    | ZB_RECEIVE_DATA_INDICATION | receiveDataIndication | AREQ | source, command, len, data    |
+    | ZB_FIND_DEVICE_CONFIRM     | findDeviceConfirm     | AREQ | searchtype, searchkey, result |
+
+<a name="UtilTable"></a>
+### 8.6 ccznp.utilRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs                   | cc-znp APIs             | Type | Arguments                                                 | Result                                                                                  |
+    |----------------------------------|-------------------------|------|-----------------------------------------------------------|-----------------------------------------------------------------------------------------|
+    | UTIL_GET_DEVICE_INFO             | getDeviceInfo           | SREQ | _none_                                                    | status, ieeeaddr, shortaddr, devicetype, devicestate, numassocdevices, assocdeviceslist |
+    | UTIL_GET_NV_INFO                 | getNvInfo               | SREQ | _none_                                                    | status, ieeeaddr, scanchannels, panid, securitylevel, preconfigkey                      |
+    | UTIL_SET_PANID                   | setPanid                | SREQ | panid                                                     | status                                                                                  |
+    | UTIL_SET_CHANNELS                | setChannels             | SREQ | channels                                                  | status                                                                                  |
+    | UTIL_SET_SECLEVEL                | setSeclevel             | SREQ | securitylevel                                             | status                                                                                  |
+    | UTIL_SET_PRECFGKEY               | setPrecfgkey            | SREQ | preconfigkey                                              | status                                                                                  |
+    | UTIL_CALLBACK_SUB_CMD            | callbackSubCmd          | SREQ | subsystemid, action                                       | status                                                                                  |
+    | UTIL_KEY_EVENT                   | keyEvent                | SREQ | shift, key                                                | status                                                                                  |
+    | UTIL_TIME_ALIVE                  | timeAlive               | SREQ | _none_                                                    | seconds                                                                                 |
+    | UTIL_LED_CONTROL                 | ledControl              | SREQ | ledid, mode                                               | status                                                                                  |
+    | UTIL_LOOPBACK                    | testLoopback            | SREQ | data                                                      | data                                                                                    |
+    | UTIL_DATA_REQ                    | dataReq                 | SREQ | securityuse                                               | status                                                                                  |
+    | UTIL_SRC_MATCH_ENABLE            | srcMatchEnable          | SREQ | _none_                                                    | status                                                                                  |
+    | UTIL_SRC_MATCH_ADD_ENTRY         | srcMatchAddEntry        | SREQ | addressmode, address, panid                               | status                                                                                  |
+    | UTIL_SRC_MATCH_DEL_ENTRY         | srcMatchDelEntry        | SREQ | addressmode, address, panid                               | status                                                                                  |
+    | UTIL_SRC_MATCH_CHECK_SRC_ADDR    | srcMatchCheckSrcAddr    | SREQ | addressmode, address, panid                               | status                                                                                  |
+    | UTIL_SRC_MATCH_ACK_ALL_PENDING   | srcMatchAckAllPending   | SREQ | option                                                    | status                                                                                  |
+    | UTIL_SRC_MATCH_CHECK_ALL_PENDING | srcMatchCheckAllPending | SREQ | _none_                                                    | status, value                                                                           |
+    | UTIL_ADDRMGR_EXT_ADDR_LOOKUP     | addrmgrExtAddrLookup    | SREQ | extaddr                                                   | nwkaddr                                                                                 |
+    | UTIL_ADDRMGR_NWK_ADDR_LOOKUP     | addrmgrNwkAddrLookup    | SREQ | nwkaddr                                                   | extaddr                                                                                 |
+    | UTIL_APSME_LINK_KEY_DATA_GET     | apsmeLinkKeyDataGet     | SREQ | extaddr                                                   | status, seckey, txfrmcntr, rxfrmcntr                                                    |
+    | UTIL_APSME_LINK_KEY_NV_ID_GET    | apsmeLinkKeyNvIdGet     | SREQ | extaddr                                                   | status, linkkeynvid                                                                     |
+    | UTIL_APSME_REQUEST_KEY_CMD       | apsmeRequestKeyCmd      | SREQ | partneraddr                                               | status                                                                                  |
+    | UTIL_ASSOC_COUNT                 | assocCount              | SREQ | startrelation, endrelation                                | count                                                                                   |
+    | UTIL_ASSOC_FIND_DEVICE           | assocFindDevice         | SREQ | number                                                    | device                                                                                  |
+    | UTIL_ASSOC_GET_WITH_ADDRESS      | assocGetWithAddress     | SREQ | extaddr, nwkaddr                                          | device                                                                                  |
+    | UTIL_BIND_ADD_ENTRY              | bindAddEntry            | SREQ | addrmode, dstaddr, dstendpoint, numclusterids, clusterids | srcep, dstgroupmode, dstidx, dstep, numclusterids, clusterids                           |
+    | UTIL_ZCL_KEY_EST_INIT_EST        | zclKeyEstInitEst        | SREQ | taskid, seqnum, endpoint, addrmode, extaddr               | status                                                                                  |
+    | UTIL_ZCL_KEY_EST_SIGN            | zclKeyEstSign           | SREQ | inputlen, input                                           | status, key                                                                             |
+    | UTIL_SRNG_GEN                    | srngGen                 | SREQ | _none_                                                    | outrng                                                                                  |
+    |                                  | gpioSetDirection        | SREQ | port, bit, direction                                      | oldp0dir, oldp1dir, oldp2dir, p0dir, p1dir, p2dir                                       |
+    |                                  | gpioRead                | SREQ | _none_                                                    | p0, p1, p2, p0dir, p1dir, p2dir                                                         |
+    |                                  | gpioWrite               | SREQ | port, bit, value                                          | oldp0, oldp1, oldp2, p0, p1, p2, p0dir, p1dir, p2dir                                    |
+
+* Callbacks  
+
+    | ZigBee MT APIs             | cc-znp APIs        | Type | Result                                 |
+    |----------------------------|--------------------|------|----------------------------------------|
+    | UTIL_SYNC_REQ              | syncReq            | AREQ | _none_                                 |
+    | UTIL_ZCL_KEY_ESTABLISH_IND | zclKeyEstablishInd | AREQ | taskid, event, status, waittime, suite |
+
+<a name="DbgTable"></a>
+### 8.7 ccznp.dbgRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs      | cc-znp APIs  | Type | Arguments              | Result |
+    |---------------------|--------------|------|------------------------|--------|
+    | DEBUG_SET_THRESHOLD | setThreshold | SREQ | componentid, threshold | status |
+    | DEBUG_MSG           | msg          | AREQ | length, string         |        |
+
+* Callbacks  
+
+    _none_
+
+<a name="AppTable"></a>
+### 8.8 ccznp.appRequest APIs  
+
+* Commands  
+
+    | ZigBee MT APIs | cc-znp APIs | Type | Arguments                                                          | Result |
+    |----------------|-------------|------|--------------------------------------------------------------------|--------|
+    | APP_MSG        | msg         | SREQ | appendpoint, destaddress, destendpoint, clusterid, msglen, message | status |
+    | APP_USER_TEST  | userTest    | SREQ | srcep, commandid, param1, param2                                   | status |
+
+* Callbacks  
+
+    | ZigBee MT APIs | cc-znp APIs | Type | Result                                          |
+    |----------------|-------------|------|-------------------------------------------------|
+    |                | zllTlInd    | AREQ | nwkaddr, endpoint, profileid, deviceid, version |

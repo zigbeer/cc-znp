@@ -2543,7 +2543,7 @@
                 ]
             }
         },
-        "mgmtPermitJoinRequest": {
+        "mgmtPermitJoinReq": {
             "type": 1,
             "cmdId": 54,
             "params": {
@@ -2565,7 +2565,7 @@
                 ]
             }
         },
-        "mgmtNwkUpdateRequest": {
+        "mgmtNwkUpdateReq": {
             "type": 1,
             "cmdId": 55,
             "params": {
@@ -4734,7 +4734,7 @@
         }
     },
     "DBG": {
-        "setDebugThreshold": {
+        "setThreshold": {
             "type": 1,
             "cmdId": 0,
             "params": {
