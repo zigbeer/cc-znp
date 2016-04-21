@@ -223,14 +223,17 @@ znp.on('close', function () {
 
 *************************************************
 <a name="EVT_AREQ"></a>
-### znp.on('AREQ', function (data) {...})
+### znp.on('AREQ', function (msg) {...})
 When there is an 'AREQ' message coming from ZNP, an 'AREQ' event will be fired along with the message content.  
 
 **Examples:**  
 
 ```js
-znp.on('AREQ', function (data) {
-    console.log(data);  // [TODO] give an example
+znp.on('AREQ', function (msg) {
+    console.log(msg);  // [TODO] give an example
+
+    // origin: data = { sof, len, type, subsys, cmd, payload, fcs, csum }
+    // I've changed to msg = { subsys, ind, data }, is this right?
 });
 ```
 
@@ -260,10 +263,10 @@ znp.on('AREQ', function (data) {
     | ZigBee MT APIs              | cc-znp APIs          | Type     | Arguments                                           | Result                                                    |
     |-----------------------------|----------------------|----------|-----------------------------------------------------|-----------------------------------------------------------|
     | SYS_RESET_REQ               | resetReq             | AREQ     | `{ type }`                                          | _none_                                                    |
-    | SYS_PING                    | ping                 | SREQ     | `{ _none_ }`                                        | `{ capabilities }`                                        |
-    | SYS_VERSION                 | version              | SREQ     | `{ _none_ }`                                        | `{ transportrev, product, majorrel, minorrel, maintrel }` |
+    | SYS_PING                    | ping                 | SREQ     | `{ }`                                               | `{ capabilities }`                                        |
+    | SYS_VERSION                 | version              | SREQ     | `{ }`                                               | `{ transportrev, product, majorrel, minorrel, maintrel }` |
     | SYS_SET_EXTADDR             | setExtAddr           | SREQ     | `{ extaddress }`                                    | `{ status }`                                              |
-    | SYS_GET_EXTADDR             | getExtAddr           | SREQ     | `{ _none_ }`                                        | `{ extaddress }`                                          |
+    | SYS_GET_EXTADDR             | getExtAddr           | SREQ     | `{ }`                                               | `{ extaddress }`                                          |
     | SYS_RAM_READ                | ramRead              | SREQ     | `{ address, len }`                                  | `{ status, len, value }`                                  |
     | SYS_RAM_WRITE               | ramWrite             | SREQ     | `{ address, len, value }`                           | `{ status }`                                              |
     | SYS_OSAL_NV_READ            | osalNvRead           | SREQ     | `{ id, offset }`                                    | `{ status, len, value }`                                  |
@@ -273,30 +276,32 @@ znp.on('AREQ', function (data) {
     | SYS_OSAL_NV_LENGTH          | osalNvLength         | SREQ     | `{ id }`                                            | `{ length }`                                              |
     | SYS_OSAL_START_TIMER        | osalStartTimer       | SREQ     | `{ id, timeout }`                                   | `{ status }`                                              |
     | SYS_OSAL_STOP_TIMER         | osalStopTimer        | SREQ     | `{ id }`                                            | `{ status }`                                              |
-    | SYS_RANDOM                  | random               | SREQ     | `{ _none_ }`                                        | `{ value }`                                               |
+    | SYS_RANDOM                  | random               | SREQ     | `{ }`                                               | `{ value }`                                               |
     | SYS_ADC_READ                | adcRead              | SREQ     | `{ channel, resolution }`                           | `{ value }`                                               |
     | SYS_GPIO                    | gpio                 | SREQ     | `{ operation, value }`                              | `{ value }`                                               |
     | SYS_STACK_TUNE              | stackTune            | SREQ     | `{ operation, value }`                              | `{ value }`                                               |
     | SYS_SET_TIME                | setTime              | SREQ     | `{ utc, hour, minute, second, month, day, year }`   | `{ status }`                                              |
-    | SYS_GET_TIME                | getTime              | SREQ     | `{ _none_ }`                                        | `{ utc, hour, minute, second, month, day, year }`         |
+    | SYS_GET_TIME                | getTime              | SREQ     | `{ }`                                               | `{ utc, hour, minute, second, month, day, year }`         |
     | SYS_SET_TX_POWER            | setTxPower           | SREQ     | `{ level }`                                         | `{ txpower }`                                             |
-    | SYS_ZDIAGS_INIT_STATS       | zdiagsInitStats      | SREQ     | `{ _none_ }`                                        | `{ status }`                                              |
+    | SYS_ZDIAGS_INIT_STATS       | zdiagsInitStats      | SREQ     | `{ }`                                               | `{ status }`                                              |
     | SYS_ZDIAGS_CLEAR_STATS      | zdiagsClearStats     | SREQ     | `{ clearnv }`                                       | `{ sysclock }`                                            |
     | SYS_ZDIAGS_GET_STATS        | zdiagsGetStats       | SREQ     | `{ attributeid }`                                   | `{ attributevalue }`                                      |
-    | SYS_ZDIAGS_RESTORE_STATS_NV | zdiagsRestoreStatsNv | SREQ     | `{ _none_ }`                                        | `{ status }`                                              |
-    | SYS_ZDIAGS_SAVE_STATS_TO_NV | zdiagsSaveStatsToNv  | SREQ     | `{ _none_ }`                                        | `{ sysclock }`                                            |
+    | SYS_ZDIAGS_RESTORE_STATS_NV | zdiagsRestoreStatsNv | SREQ     | `{ }`                                               | `{ status }`                                              |
+    | SYS_ZDIAGS_SAVE_STATS_TO_NV | zdiagsSaveStatsToNv  | SREQ     | `{ }`                                               | `{ sysclock }`                                            |
     | SYS_OSAL_NV_READ_EXT        | osalNvReadExt        | SREQ     | `{ id, offset }`                                    | `{ status, len, value }`                                  |
     | SYS_OSAL_NV_WRITE_EXT       | osalNvWriteExt       | SREQ     | `{ id, offset, len, value }`                        | `{ status }`                                              |
     |                             | jammerParameters     | SREQ     | `{ jmrcntievents, jmrhinoiselvl, jmrdetectperiod }` | `{ status }`                                              |
     |                             | snifferParameters    | SREQ     | `{ param }`                                         | `{ status }`                                              |
 
-* Callbacks  
+* Callbacks [TODO] don't know what you mean callback? it should be an event 'AREQ' with something like { subsys:'SYS', ind: 'osalTimerExpired', data: { id: 2 } }
+--> Change to Indication
 
-    | ZigBee MT APIs         | cc-znp APIs      | Type     | Result                                                     |
-    |------------------------|------------------|----------|------------------------------------------------------------|
-    | SYS_RESET_IND          | resetInd         |   AREQ   | reason, transportrev, productid, majorrel, minorrel, hwrev |
-    | SYS_OSAL_TIMER_EXPIRED | osalTimerExpired |   AREQ   | id                                                         |
-    |                        | jammerInd        |   AREQ   | jammerind                                                  |
+* Indication
+    | ZigBee MT APIs         | cc-znp Event | msg.ind          | msg.data                                                         |
+    |------------------------|--------------|------------------|------------------------------------------------------------------|
+    | SYS_RESET_IND          |     AREQ     | resetInd         | `{ reason, transportrev, productid, majorrel, minorrel, hwrev }` |
+    | SYS_OSAL_TIMER_EXPIRED |     AREQ     | osalTimerExpired | `{ id }`                                                         |
+    |                        |     AREQ     | jammerInd        | `{ jammerind }`                                                  |
 
 <a name="MacTable"></a>
 ### 8.2 znp.macRequest APIs  
