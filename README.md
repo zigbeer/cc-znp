@@ -11,19 +11,20 @@ cc-znp
 4. [Usage](#Usage)  
 5. [APIs](#APIs): init(), close(), and request()  
 6. [Events](#Events): 'ready', 'colse', and 'AREQ'  
-7. [Contributor](#Contributor)  
+7. [Contributors](#Contributor)  
 8. [Z-Stack MT API Reference Tables](#ApiTables)  
 
 <a name="Overiew"></a>
 ## 1. Overview  
 
-**cc-znp** allows you to interact with TI's CC253X ZigBee Network Processor(ZNP) on node.js via *TI Z-Stack Monitor and Test(MT) APIs*.  
+**cc-znp** allows you to interact with TI's CC253X ZigBee Network Processor(ZNP) on node.js via *TI Z-Stack Monitor and Test(MT) APIs* upon an UART interface.  
 
 <a name="ZNP"></a>
-## 2. ZigBee Network Processor (ZNP)  
+## 2. ZigBee Network Processor  
 
-The following diagram shows the scenario when CC253X operates as a ZNP. In this case, the ZigBee stack runs on CC253X, and the application runs on an
-external microcontroller or PC.Therefore application can be externally developed on an application processor. The application can communicate with ZNP through TI's Monitor and Test commands upon an UART interface.  
+The following diagram shows the scenario when CC253X operates as a ZNP. In this case, the ZigBee stack is running on CC253X, and the application (app) is running on an external host, i.e. a microcontroller or an application processor. The app can do its job in a resourceful environment and work with ZNP for network transportation.  
+
+This project aims to provide an opportunity for those who like to build IoT applications with zigbee on node.js. With node.js, back-end developers can have RESTful APIs to bring zigbee machines to web world easily, and can push machines to the cloud as well. For front-end developer, they can do more creative things with Javascript, and can build any fascinating GUI they want with many cool UI frameworks.  
 
 ![Network Processor Configuration](https://github.com/jackchased/cc-znp/blob/master/documents/znp.png)
 
@@ -35,10 +36,10 @@ external microcontroller or PC.Therefore application can be externally developed
 <a name="Usage"></a>
 ## 4. Usage  
 
-To begin with **cc-znp**, you must firstly set up the serial port and call the [init()](#API_init) method:  
+To begin with **cc-znp**, firstly set up the serial port and call [init()](#API_init) to enable the interface:  
 
 ``` javascript
-var ccznp = require('cc-znp');
+var znp = require('cc-znp');
 var spCfg = {
     path: '/dev/ttyUSB0',
     options: {
@@ -48,11 +49,13 @@ var spCfg = {
     }
 };
 
-ccznp.on('ready', function () {
+znp.on('ready', function () {
     console.log('Initialization completes.');
+
+    // start to run your applcation
 });
 
-ccznp.init(spCfg, function (err) {
+znp.init(spCfg, function (err) {
     console.log(err);
 });
 ```
@@ -68,7 +71,7 @@ ccznp.init(spCfg, function (err) {
 <a name="API_init"></a>
 ### .init(spCfg, callback)
 
-Create a new serial port on `spCfg.path` and connect to CC253X SoC.  
+Enable a serial port connecting to CC253X SoC with given `spCfg.path`.  
 
 **Arguments:**  
 
@@ -76,8 +79,9 @@ Create a new serial port on `spCfg.path` and connect to CC253X SoC.
 
     | Property     | Type    | Description                                                                                                             |
     |--------------|---------|-------------------------------------------------------------------------------------------------------------------------|
-    | path         | String  | The system path of the serial port to open. e.g., `/dev/ttyUSB0`.                                                       |
+    | path         | String  | System path of the serial port to open. e.g., `/dev/ttyUSB0`.                                                           |
     | options      | Object  | Port configuration [options](https://www.npmjs.com/package/serialport#serialport-path-options-openimmediately-callback).|
+
 2. `callback`(_Function_): `function (err) { ... }`  
 
 **Returns:**  
@@ -86,7 +90,7 @@ Create a new serial port on `spCfg.path` and connect to CC253X SoC.
 **Examples:**  
 
 ```js
-var ccznp = require('cc-znp');
+var znp = require('cc-znp');
 var spCfg = {
     path: '/dev/ttyUSB0',
     options: {
@@ -96,11 +100,7 @@ var spCfg = {
     }
 };
 
-ccznp.on('ready', function () {
-    console.log('Initialization completes.');
-});
-
-ccznp.init(spCfg, function (err) {
+znp.init(spCfg, function (err) {
     console.log(err);
 });
 ```
@@ -121,8 +121,9 @@ This method will close the opened serial port.
 **Examples:**  
 
 ```js
-ccznp.close(function (err) {
-    if (err) console.log(err);
+znp.close(function (err) {
+    if (err)
+        console.log(err);
 });
 ```
 
@@ -130,14 +131,14 @@ ccznp.close(function (err) {
 <a name="API_request"></a>
 ### .request(subsys, cmdId, valObj, callback)
 
-Calls TI Z-Stack Monitor and Test Commands.  
+Invoke TI Z-Stack Monitor and Test Commands.  
 
 **Arguments:**  
 
-1. `subsys`(_Number_ | _String_): The subsystem. For example, send a command of subsystem 'SYS', you can set `subsys` to `1` or `'SYS'`.  
-2. `cmdId`(_Number_ | _String_): The command id which is a number or string according to which subsystem you are using.  
-3. `valObj`(_Object_): An argument object along with the specified command.  
-4. `callback`(_Function_): `function (err, result) {...}`. Get called when the 'SREQ' message is received.  
+1. `subsys`(_Number_ | _String_): Subsystem, i.e., set it to `1` or `'SYS'` to invoke a SYS command.  
+2. `cmdId`(_Number_ | _String_): Command id of which subsys command you like to invoke.  
+3. `valObj`(_Object_): An argument object passes to the command.  
+4. `callback`(_Function_): `function (err, result) {...}`. Get called when the response is received.  
 
 **Returns:**  
 * _none_
@@ -146,18 +147,19 @@ Calls TI Z-Stack Monitor and Test Commands.
 
 ```js
 // example of calling ping() from the subsystem 'SYS'
-ccznp.request('SYS', 'ping', {}, function (err, result) {
+znp.request('SYS', 'ping', {}, function (err, result) {
     if (err) 
         console.log(err);
     else 
-        console.log(result);
+        console.log(result);    // [TODO] give an example
 });
 
-ccznp.request(1, 1, {}, function (err, result) {
+// use numbered ids. The first 1 is subsystem 'SYS', and the second 1 is command 'ping'
+znp.request(1, 1, {}, function (err, result) {
     if (err) 
         console.log(err);
     else 
-        console.log(result);
+        console.log(result);    // [TODO] give an example
 });
 ```
 
@@ -176,20 +178,14 @@ ccznp.request(1, 1, {}, function (err, result) {
 **Examples:**  
 
 ```js
-// example of calling ping() from the subsystem 'SYS'
-ccznp.sysRequest('ping', {}, function (err, result) {
-    console.log(result);
-});
-ccznp.sysRequest(1, {}, function (err, result) {
-    console.log(result);
+// examples with shorthands
+
+znp.sysRequest('ping', {}, function (err, result) {
+    console.log(result);    // [TODO] give an example
 });
 
-// example of calling setPanid() from the subsystem 'UTIL'
-ccznp.utilRequest('setPanid', {panid: 0xFFFF}, function (err, result) {
-    console.log(result);
-});
-ccznp.utilRequest(2, {panid: 0xFFFF}, function (err, result) {
-    console.log(result);
+znp.utilRequest('setPanid', { panid: 0xFFFF }, function (err, result) {
+    console.log(result);    // [TODO] give an example
 });
 ```
 
@@ -201,97 +197,98 @@ ccznp.utilRequest(2, {panid: 0xFFFF}, function (err, result) {
 
 *************************************************
 <a name="EVT_ready"></a>
-### ccznp.on('ready', function () {...})
-The 'ready' event will be fired when the initializing procedure completes.  
+### znp.on('ready', function () {...})
+'ready' event will be fired when the initializing procedure accomplishes.  
 
 **Examples:**  
 
 ```js
-ccznp.on('ready', function () {
+znp.on('ready', function () {
     console.log('Initialization completes.');
 });
 ```
 
 *************************************************
 <a name="EVT_close"></a>
-### ccznp.on('close', function () {...})
+### znp.on('close', function () {...})
 Fired when the serial port is closed.  
 
 **Examples:**  
 
 ```js
-ccznp.on('close', function () {
+znp.on('close', function () {
     console.log('The serialport is closed.');
 });
 ```
 
 *************************************************
 <a name="EVT_AREQ"></a>
-### ccznp.on('AREQ', function (data) {...})
-When there is an 'AREQ' message coming from ZNP, an 'AREQ' event will be fired along with the data of message information.  
+### znp.on('AREQ', function (data) {...})
+When there is an 'AREQ' message coming from ZNP, an 'AREQ' event will be fired along with the message content.  
 
 **Examples:**  
 
 ```js
-ccznp.on('AREQ', function (data) {
-    console.log(data);
+znp.on('AREQ', function (data) {
+    console.log(data);  // [TODO] give an example
 });
 ```
 
 <a name="Contributor"></a>
-## 7. Contributor
+## 7. Contributors
 
-* [Simen Li](https://www.npmjs.com/~simenkid)
+* [Jack Wu](https://github.com/jackchased)
+* [Simen Li](https://github.com/simenkid)
 
 <a name="ApiTables"></a>
 ## 8. Z-Stack MT API Reference Tables  
-* [ccznp.sysRequest APIs](#SysTable)  
-* [ccznp.macRequest APIs](#MacTable)  
-* [ccznp.afRequest APIs](#AfTable)  
-* [ccznp.zdoRequest APIs](#ZdoTable)  
-* [ccznp.sapiRequest APIs](#SapiTable)  
-* [ccznp.utilRequest APIs](#UtilTable)  
-* [ccznp.dbgRequest APIs](#DbgTable)  
-* [ccznp.appRequest APIs](#AppTable)  
+* [znp.sysRequest APIs](#SysTable)  
+* [znp.macRequest APIs](#MacTable)  
+* [znp.afRequest APIs](#AfTable)  
+* [znp.zdoRequest APIs](#ZdoTable)  
+* [znp.sapiRequest APIs](#SapiTable)  
+* [znp.utilRequest APIs](#UtilTable)  
+* [znp.dbgRequest APIs](#DbgTable)  
+* [znp.appRequest APIs](#AppTable)  
 
 *************************************************
 <a name="SysTable"></a>
-### 8.1 ccznp.sysRequest APIs  
+### 8.1 znp.sysRequest APIs  
 
 * Commands  
 
-    | ZigBee MT APIs              | cc-znp APIs          | Type     | Arguments                                     | Result                                              |
-    |-----------------------------|----------------------|----------|-----------------------------------------------|-----------------------------------------------------|
-    | SYS_RESET_REQ               | resetReq             | AREQ     | type                                          | _none_                                              |
-    | SYS_PING                    | ping                 | SREQ     | _none_                                        | capabilities                                        |
-    | SYS_VERSION                 | version              | SREQ     | _none_                                        | transportrev, product, majorrel, minorrel, maintrel |
-    | SYS_SET_EXTADDR             | setExtAddr           | SREQ     | extaddress                                    | status                                              |
-    | SYS_GET_EXTADDR             | getExtAddr           | SREQ     | _none_                                        | extaddress                                          |
-    | SYS_RAM_READ                | ramRead              | SREQ     | address, len                                  | status, len, value                                  |
-    | SYS_RAM_WRITE               | ramWrite             | SREQ     | address, len, value                           | status                                              |
-    | SYS_OSAL_NV_READ            | osalNvRead           | SREQ     | id, offset                                    | status, len, value                                  |
-    | SYS_OSAL_NV_WRITE           | osalNvWrite          | SREQ     | id, offset, len, value                        | status                                              |
-    | SYS_OSAL_NV_ITEM_INIT       | osalNvItemInit       | SREQ     | id, len, initlen, initvalue                   | status                                              |
-    | SYS_OSAL_NV_DELETE          | osalNvDelete         | SREQ     | id, len                                       | status                                              |
-    | SYS_OSAL_NV_LENGTH          | osalNvLength         | SREQ     | id                                            | length                                              |
-    | SYS_OSAL_START_TIMER        | osalStartTimer       | SREQ     | id, timeout                                   | status                                              |
-    | SYS_OSAL_STOP_TIMER         | osalStopTimer        | SREQ     | id                                            | status                                              |
-    | SYS_RANDOM                  | random               | SREQ     | _none_                                        | value                                               |
-    | SYS_ADC_READ                | adcRead              | SREQ     | channel, resolution                           | value                                               |
-    | SYS_GPIO                    | gpio                 | SREQ     | operation, value                              | value                                               |
-    | SYS_STACK_TUNE              | stackTune            | SREQ     | operation, value                              | value                                               |
-    | SYS_SET_TIME                | setTime              | SREQ     | utc, hour, minute, second, month, day, year   | status                                              |
-    | SYS_GET_TIME                | getTime              | SREQ     | _none_                                        | utc, hour, minute, second, month, day, year         |
-    | SYS_SET_TX_POWER            | setTxPower           | SREQ     | level                                         | txpower                                             |
-    | SYS_ZDIAGS_INIT_STATS       | zdiagsInitStats      | SREQ     | _none_                                        | status                                              |
-    | SYS_ZDIAGS_CLEAR_STATS      | zdiagsClearStats     | SREQ     | clearnv                                       | sysclock                                            |
-    | SYS_ZDIAGS_GET_STATS        | zdiagsGetStats       | SREQ     | attributeid                                   | attributevalue                                      |
-    | SYS_ZDIAGS_RESTORE_STATS_NV | zdiagsRestoreStatsNv | SREQ     | _none_                                        | status                                              |
-    | SYS_ZDIAGS_SAVE_STATS_TO_NV | zdiagsSaveStatsToNv  | SREQ     | _none_                                        | sysclock                                            |
-    | SYS_OSAL_NV_READ_EXT        | osalNvReadExt        | SREQ     | id, offset                                    | status, len, value                                  |
-    | SYS_OSAL_NV_WRITE_EXT       | osalNvWriteExt       | SREQ     | id, offset, len, value                        | status                                              |
-    |                             | jammerParameters     | SREQ     | jmrcntievents, jmrhinoiselvl, jmrdetectperiod | status                                              |
-    |                             | snifferParameters    | SREQ     | param                                         | status                                              |
+    | ZigBee MT APIs              | cc-znp APIs          | Type     | Arguments                                           | Result                                                    |
+    |-----------------------------|----------------------|----------|-----------------------------------------------------|-----------------------------------------------------------|
+    | SYS_RESET_REQ               | resetReq             | AREQ     | `{ type }`                                          | _none_                                                    |
+    | SYS_PING                    | ping                 | SREQ     | `{ _none_ }`                                        | `{ capabilities }`                                        |
+    | SYS_VERSION                 | version              | SREQ     | `{ _none_ }`                                        | `{ transportrev, product, majorrel, minorrel, maintrel }` |
+    | SYS_SET_EXTADDR             | setExtAddr           | SREQ     | `{ extaddress }`                                    | `{ status }`                                              |
+    | SYS_GET_EXTADDR             | getExtAddr           | SREQ     | `{ _none_ }`                                        | `{ extaddress }`                                          |
+    | SYS_RAM_READ                | ramRead              | SREQ     | `{ address, len }`                                  | `{ status, len, value }`                                  |
+    | SYS_RAM_WRITE               | ramWrite             | SREQ     | `{ address, len, value }`                           | `{ status }`                                              |
+    | SYS_OSAL_NV_READ            | osalNvRead           | SREQ     | `{ id, offset }`                                    | `{ status, len, value }`                                  |
+    | SYS_OSAL_NV_WRITE           | osalNvWrite          | SREQ     | `{ id, offset, len, value }`                        | `{ status }`                                              |
+    | SYS_OSAL_NV_ITEM_INIT       | osalNvItemInit       | SREQ     | `{ id, len, initlen, initvalue }`                   | `{ status }`                                              |
+    | SYS_OSAL_NV_DELETE          | osalNvDelete         | SREQ     | `{ id, len }`                                       | `{ status }`                                              |
+    | SYS_OSAL_NV_LENGTH          | osalNvLength         | SREQ     | `{ id }`                                            | `{ length }`                                              |
+    | SYS_OSAL_START_TIMER        | osalStartTimer       | SREQ     | `{ id, timeout }`                                   | `{ status }`                                              |
+    | SYS_OSAL_STOP_TIMER         | osalStopTimer        | SREQ     | `{ id }`                                            | `{ status }`                                              |
+    | SYS_RANDOM                  | random               | SREQ     | `{ _none_ }`                                        | `{ value }`                                               |
+    | SYS_ADC_READ                | adcRead              | SREQ     | `{ channel, resolution }`                           | `{ value }`                                               |
+    | SYS_GPIO                    | gpio                 | SREQ     | `{ operation, value }`                              | `{ value }`                                               |
+    | SYS_STACK_TUNE              | stackTune            | SREQ     | `{ operation, value }`                              | `{ value }`                                               |
+    | SYS_SET_TIME                | setTime              | SREQ     | `{ utc, hour, minute, second, month, day, year }`   | `{ status }`                                              |
+    | SYS_GET_TIME                | getTime              | SREQ     | `{ _none_ }`                                        | `{ utc, hour, minute, second, month, day, year }`         |
+    | SYS_SET_TX_POWER            | setTxPower           | SREQ     | `{ level }`                                         | `{ txpower }`                                             |
+    | SYS_ZDIAGS_INIT_STATS       | zdiagsInitStats      | SREQ     | `{ _none_ }`                                        | `{ status }`                                              |
+    | SYS_ZDIAGS_CLEAR_STATS      | zdiagsClearStats     | SREQ     | `{ clearnv }`                                       | `{ sysclock }`                                            |
+    | SYS_ZDIAGS_GET_STATS        | zdiagsGetStats       | SREQ     | `{ attributeid }`                                   | `{ attributevalue }`                                      |
+    | SYS_ZDIAGS_RESTORE_STATS_NV | zdiagsRestoreStatsNv | SREQ     | `{ _none_ }`                                        | `{ status }`                                              |
+    | SYS_ZDIAGS_SAVE_STATS_TO_NV | zdiagsSaveStatsToNv  | SREQ     | `{ _none_ }`                                        | `{ sysclock }`                                            |
+    | SYS_OSAL_NV_READ_EXT        | osalNvReadExt        | SREQ     | `{ id, offset }`                                    | `{ status, len, value }`                                  |
+    | SYS_OSAL_NV_WRITE_EXT       | osalNvWriteExt       | SREQ     | `{ id, offset, len, value }`                        | `{ status }`                                              |
+    |                             | jammerParameters     | SREQ     | `{ jmrcntievents, jmrhinoiselvl, jmrdetectperiod }` | `{ status }`                                              |
+    |                             | snifferParameters    | SREQ     | `{ param }`                                         | `{ status }`                                              |
 
 * Callbacks  
 
@@ -302,7 +299,7 @@ ccznp.on('AREQ', function (data) {
     |                        | jammerInd        |   AREQ   | jammerind                                                  |
 
 <a name="MacTable"></a>
-### 8.2 ccznp.macRequest APIs  
+### 8.2 znp.macRequest APIs  
 
 * Commands  
 
@@ -347,7 +344,7 @@ ccznp.on('AREQ', function (data) {
     | MAC_PURGE_CNF         | purgeCnf        | AREQ | status, handle                                                                                                                                                                                                                                   |
 
 <a name="AfTable"></a>
-### 8.3 ccznp.afRequest APIs  
+### 8.3 znp.afRequest APIs  
 
 * Commands  
 
@@ -374,7 +371,7 @@ ccznp.on('AREQ', function (data) {
     | AF_INCOMING_MSG_EXT | incomingMsgExt | AREQ | groupid, clusterid, srcaddrmode, srcaddr, srcendpoint, srcpanid, dstendpoint, wasbroadcast, linkquality, securityuse, timestamp, transseqnumber, len, data |
 
 <a name="ZdoTable"></a>
-### 8.4 ccznp.zdoRequest APIs  
+### 8.4 znp.zdoRequest APIs  
 
 * Commands  
 
@@ -471,7 +468,7 @@ ccznp.on('AREQ', function (data) {
     |                          | permitJoinInd     | AREQ | duration                                                                                                                                                                                            |
 
 <a name="SapiTable"></a>
-### 8.5 ccznp.sapiRequest APIs  
+### 8.5 znp.sapiRequest APIs  
 
 * Commands  
 
@@ -500,7 +497,7 @@ ccznp.on('AREQ', function (data) {
     | ZB_FIND_DEVICE_CONFIRM     | findDeviceConfirm     | AREQ | searchtype, searchkey, result |
 
 <a name="UtilTable"></a>
-### 8.6 ccznp.utilRequest APIs  
+### 8.6 znp.utilRequest APIs  
 
 * Commands  
 
@@ -548,7 +545,7 @@ ccznp.on('AREQ', function (data) {
     | UTIL_ZCL_KEY_ESTABLISH_IND | zclKeyEstablishInd | AREQ | taskid, event, status, waittime, suite |
 
 <a name="DbgTable"></a>
-### 8.7 ccznp.dbgRequest APIs  
+### 8.7 znp.dbgRequest APIs  
 
 * Commands  
 
@@ -562,7 +559,7 @@ ccznp.on('AREQ', function (data) {
     _none_
 
 <a name="AppTable"></a>
-### 8.8 ccznp.appRequest APIs  
+### 8.8 znp.appRequest APIs  
 
 * Commands  
 
