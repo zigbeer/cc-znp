@@ -296,7 +296,8 @@ znp.on('AREQ', function (msg) {
 * Callbacks [TODO] don't know what you mean callback? it should be an event 'AREQ' with something like { subsys:'SYS', ind: 'osalTimerExpired', data: { id: 2 } }
 --> Change to Indication
 
-* Indication
+* Indication  
+
     | ZigBee MT APIs         | cc-znp Event | msg.ind          | msg.data                                                         |
     |------------------------|--------------|------------------|------------------------------------------------------------------|
     | SYS_RESET_IND          |     AREQ     | resetInd         | `{ reason, transportrev, productid, majorrel, minorrel, hwrev }` |
