@@ -3716,7 +3716,11 @@
                         "usemulticast": 0
                     }
                 ],
-                "rsp": []
+                "rsp": [
+                    {
+                        "status": 0
+                    }
+                ]
             }
         },
         "tcDeviceInd": {
