@@ -38,7 +38,7 @@ This project aims to provide an opportunity for those who like to build IoT appl
 
 To begin with **cc-znp**, firstly set up the serial port and call [init()](#API_init) to enable the interface:  
 
-``` javascript
+```js
 var znp = require('cc-znp');
 var spCfg = {
     path: '/dev/ttyUSB0',
@@ -151,7 +151,7 @@ znp.request('SYS', 'ping', {}, function (err, result) {
     if (err) 
         console.log(err);
     else 
-        console.log(result);    // [TODO] give an example
+        console.log(result);    // { capabilities: 121 }
 });
 
 // use numbered ids. The first 1 is subsystem 'SYS', and the second 1 is command 'ping'
@@ -159,7 +159,7 @@ znp.request(1, 1, {}, function (err, result) {
     if (err) 
         console.log(err);
     else 
-        console.log(result);    // [TODO] give an example
+        console.log(result);    // { capabilities: 121 }
 });
 ```
 
@@ -181,11 +181,11 @@ znp.request(1, 1, {}, function (err, result) {
 // examples with shorthands
 
 znp.sysRequest('ping', {}, function (err, result) {
-    console.log(result);    // [TODO] give an example
+    console.log(result);    // { capabilities: 121 }
 });
 
 znp.utilRequest('setPanid', { panid: 0xFFFF }, function (err, result) {
-    console.log(result);    // [TODO] give an example
+    console.log(result);    // { status: 0 }
 });
 ```
 
@@ -230,10 +230,7 @@ When there is an 'AREQ' message coming from ZNP, an 'AREQ' event will be fired a
 
 ```js
 znp.on('AREQ', function (msg) {
-    console.log(msg);  // [TODO] give an example
-
-    // origin: data = { sof, len, type, subsys, cmd, payload, fcs, csum }
-    // I've changed to msg = { subsys, ind, data }, is this right?
+    console.log(msg);  // { subsys: 'ZDO', ind: 'endDeviceAnnceInd', data: { srcaddr: 63536, nwkaddr: 63536, ieeeaddr: '0x00124b0001ce3631', capabilities: 142 } }
 });
 ```
 
