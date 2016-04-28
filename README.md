@@ -5,7 +5,7 @@ cc-znp
 
 ## Table of Contents  
 
-1. [Overview](#Overiew)  
+1. [Overview](#Overview)  
 2. [Zigbee Network Processor](#ZNP)  
 3. [Installation](#Installation)  
 4. [Usage](#Usage)  
@@ -14,7 +14,7 @@ cc-znp
 7. [Contributors](#Contributor)  
 8. [Z-Stack MT API Reference Tables](#ApiTables)  
 
-<a name="Overiew"></a>
+<a name="Overview"></a>
 ## 1. Overview  
 
 **cc-znp** allows you to interact with TI's CC253X ZigBee Network Processor(ZNP) on node.js via *TI Z-Stack Monitor and Test(MT) APIs* upon an UART interface.  
@@ -82,9 +82,10 @@ Enable a serial port connecting to CC253X SoC with given `spCfg.path`.
     | path         | String  | System path of the serial port to open. e.g., `/dev/ttyUSB0`.                                                           |
     | options      | Object  | Port configuration [options](https://www.npmjs.com/package/serialport#serialport-path-options-openimmediately-callback).|
 
-2. `callback`(_Function_): `function (err) { ... }`  
+2. `callback` (_Function_): `function (err) { ... }`  
 
 **Returns:**  
+
 * _none_
 
 **Examples:**  
@@ -113,9 +114,10 @@ This method will close the opened serial port.
 
 **Arguments:**  
 
-1. `callback`(_Function_, optional): `function (err) { ... }`  
+1. `callback` (_Function_, optional): `function (err) { ... }`  
 
 **Returns:**   
+
 * _none_
 
 **Examples:**  
@@ -135,12 +137,13 @@ Invoke TI Z-Stack Monitor and Test Commands.
 
 **Arguments:**  
 
-1. `subsys`(_Number_ | _String_): Subsystem, i.e., set it to `1` or `'SYS'` to invoke a SYS command.  
-2. `cmdId`(_Number_ | _String_): Command id of which subsys command you like to invoke.  
-3. `valObj`(_Object_): An argument object passes to the command.  
-4. `callback`(_Function_): `function (err, result) {...}`. Get called when the response is received.  
+1. `subsys` (_Number_ | _String_): Subsystem, i.e., set it to `1` or `'SYS'` to invoke a SYS command.  
+2. `cmdId` (_Number_ | _String_): Command id of which subsys command you like to invoke.  
+3. `valObj` (_Object_): An argument object passes to the command.  
+4. `callback` (_Function_): `function (err, result) {...}`. Get called when the response is received.  
 
 **Returns:**  
+
 * _none_
 
 **Examples:**  
@@ -242,6 +245,21 @@ znp.on('AREQ', function (msg) {
 
 <a name="ApiTables"></a>
 ## 8. Z-Stack MT API Reference Tables  
+
+These tables are cross-references between the **Z-Stack Monitor and Test API** and **cc-znp API**. Here is the description of each column in the table:  
+
+**Commands Table:**  
+* ZigBee MT APIs: The command name documented in [Z-Stack Monitor and Test API.pdf](https://github.com/jackchased/cc-znp/blob/master/documents/Z-Stack%20Monitor%20and%20Test%20API.pdf).  
+* cc-znp APIs: The API name, in cc-znp, according to a Z-Stack MT API.  
+* Type: Synchronous or Asynchronous request.  
+* Arguments: Required parameters of a cc-znp API.  
+* Result: Resulted data object passing to the cc-znp API callback.  
+
+**Indication Table:**  
+* msg.ind: The indication command.  
+* msg.data: An AREQ message data.  
+
+**The APIs of the subsystem:**  
 * [znp.sysRequest APIs](#SysTable)  
 * [znp.macRequest APIs](#MacTable)  
 * [znp.afRequest APIs](#AfTable)  
@@ -290,9 +308,6 @@ znp.on('AREQ', function (msg) {
     |                             | jammerParameters     | SREQ     | `{ jmrcntievents, jmrhinoiselvl, jmrdetectperiod }` | `{ status }`                                              |
     |                             | snifferParameters    | SREQ     | `{ param }`                                         | `{ status }`                                              |
 
-* Callbacks [TODO] don't know what you mean callback? it should be an event 'AREQ' with something like { subsys:'SYS', ind: 'osalTimerExpired', data: { id: 2 } }
---> Change to Indication
-
 * Indication  
 
     | ZigBee MT APIs         | cc-znp Event | msg.ind          | msg.data                                                         |
@@ -301,6 +316,7 @@ znp.on('AREQ', function (msg) {
     | SYS_OSAL_TIMER_EXPIRED |     AREQ     | osalTimerExpired | `{ id }`                                                         |
     |                        |     AREQ     | jammerInd        | `{ jammerind }`                                                  |
 
+*************************************************
 <a name="MacTable"></a>
 ### 8.2 znp.macRequest APIs  
 
@@ -346,6 +362,7 @@ znp.on('AREQ', function (msg) {
     | MAC_RX_ENABLE_CNF     | AREQ         | rxEnableCnf     | `{ status }`                                                                                                                                                                                                                                           |
     | MAC_PURGE_CNF         | AREQ         | purgeCnf        | `{ status, handle }`                                                                                                                                                                                                                                   |
 
+*************************************************
 <a name="AfTable"></a>
 ### 8.3 znp.afRequest APIs  
 
@@ -373,6 +390,7 @@ znp.on('AREQ', function (msg) {
     | AF_INCOMING_MSG     | AREQ         | incomingMsg    | `{ groupid, clusterid, srcaddr, srcendpoint, dstendpoint, wasbroadcast, linkquality, securityuse, timestamp, transseqnumber, len, data }`                        |
     | AF_INCOMING_MSG_EXT | AREQ         | incomingMsgExt | `{ groupid, clusterid, srcaddrmode, srcaddr, srcendpoint, srcpanid, dstendpoint, wasbroadcast, linkquality, securityuse, timestamp, transseqnumber, len, data }` |
 
+*************************************************
 <a name="ZdoTable"></a>
 ### 8.4 znp.zdoRequest APIs  
 
@@ -470,6 +488,7 @@ znp.on('AREQ', function (msg) {
     |                          | AREQ         | tcDeviceInd       | `{ nwkaddr, extaddr, parentaddr }`                                                                                                                                                                        |
     |                          | AREQ         | permitJoinInd     | `{ duration }`                                                                                                                                                                                            |
 
+*************************************************
 <a name="SapiTable"></a>
 ### 8.5 znp.sapiRequest APIs  
 
@@ -499,6 +518,7 @@ znp.on('AREQ', function (msg) {
     | ZB_RECEIVE_DATA_INDICATION | AREQ         | receiveDataIndication | `{ source, command, len, data }`    |
     | ZB_FIND_DEVICE_CONFIRM     | AREQ         | findDeviceConfirm     | `{ searchtype, searchkey, result }` |
 
+*************************************************
 <a name="UtilTable"></a>
 ### 8.6 znp.utilRequest APIs  
 
@@ -547,6 +567,7 @@ znp.on('AREQ', function (msg) {
     | UTIL_SYNC_REQ              | AREQ         | syncReq            | `{ }`                                        |
     | UTIL_ZCL_KEY_ESTABLISH_IND | AREQ         | zclKeyEstablishInd | `{ taskid, event, status, waittime, suite }` |
 
+*************************************************
 <a name="DbgTable"></a>
 ### 8.7 znp.dbgRequest APIs  
 
@@ -561,6 +582,7 @@ znp.on('AREQ', function (msg) {
 
     _none_
 
+*************************************************
 <a name="AppTable"></a>
 ### 8.8 znp.appRequest APIs  
 
