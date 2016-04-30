@@ -198,7 +198,7 @@ znp.utilRequest('setPanid', { panid: 0xFFFF }, function (err, result) {
 <a name="API_sendCmd"></a>
 ### .sendCmd(type, subsys, cmdId, payload)
 
-Exports the dependencies [Unpi send() API](https://www.npmjs.com/package/unpi#API_send), you can take it to send some binary data.  
+Exports the dependencies [Unpi](https://www.npmjs.com/package/unpi) [send() API](https://www.npmjs.com/package/unpi#API_send), you can take it to send some binary data.  
 
 <a name="Events"></a>
 ## 6. Events  
