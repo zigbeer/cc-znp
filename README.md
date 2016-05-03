@@ -11,8 +11,9 @@ cc-znp
 4. [Usage](#Usage)  
 5. [APIs](#APIs): init(), close(), request(), and sendCmd()  
 6. [Events](#Events): 'ready', 'colse', 'data', and 'AREQ'  
-7. [Contributors](#Contributors)  
-8. [Z-Stack MT API Reference Tables](#ApiTables)  
+7. [Z-Stack MT API Reference Tables](#ApiTables)  
+8. [Contributors](#Contributors)  
+9. [License](#License)  
 
 <a name="Overview"></a>
 ## 1. Overview  
@@ -36,7 +37,7 @@ The following diagram shows the scenario when CC253X operates as a ZNP. In this 
 <a name="Usage"></a>
 ## 4. Usage  
 
-To begin with **cc-znp**, firstly set up the serial port and call [init()](#API_init) to enable the interface:  
+To begin with **cc-znp**, firstly set up the serial port and call [init() API](#API_init) to enable the interface:  
 
 ```js
 var znp = require('cc-znp');
@@ -52,7 +53,7 @@ var spCfg = {
 znp.on('ready', function () {
     console.log('Initialization completes.');
 
-    // start to run your applcation
+    // start to run your application
 
 });
 
@@ -209,7 +210,7 @@ Exports the dependencies [Unpi](https://www.npmjs.com/package/unpi) [send() API]
 
 *************************************************
 <a name="EVT_ready"></a>
-### znp.on('ready', function () { ... })
+### .on('ready', function () { ... })
 
 'ready' event will be fired when the initializing procedure accomplishes.  
 
@@ -223,7 +224,7 @@ znp.on('ready', function () {
 
 *************************************************
 <a name="EVT_close"></a>
-### znp.on('close', function () { ... })
+### .on('close', function () { ... })
 
 Fired when the serial port is closed.  
 
@@ -237,7 +238,7 @@ znp.on('close', function () {
 
 *************************************************
 <a name="EVT_data"></a>
-### znp.on('data', function (data) { ... })
+### .on('data', function (data) { ... })
 
 The 'data' event will be fired along with the parsed result. Here is an example of the parsed data to show you the format. The `csum` is the checksum calculated from the received binaries. You can use it to check that if the received packet is corrupted.  
 
@@ -264,7 +265,7 @@ znp.on('data', function (data) {
 
 *************************************************
 <a name="EVT_AREQ"></a>
-### znp.on('AREQ', function (msg) { ... })
+### .on('AREQ', function (msg) { ... })
 
 When there is an 'AREQ' message coming from ZNP, an 'AREQ' event will be fired along with the message content. Here is an example of the msg format.  
 
@@ -284,28 +285,22 @@ znp.on('AREQ', function (msg) {
 });
 ```
 
-<a name="Contributors"></a>
-## 7. Contributors  
-
-* [Jack Wu](https://www.npmjs.com/~jackchased)  
-* [Simen Li](https://www.npmjs.com/~simenkid)  
-
 <a name="ApiTables"></a>
-## 8. Z-Stack MT API Reference Tables  
+## 7. Z-Stack MT API Reference Tables  
 
 These tables are cross-references between the **Z-Stack Monitor and Test API** and **cc-znp API**. Here is the description of each column in the table:  
 
 **Commands Table:**  
-* ZigBee MT API:  
+* ZigBee MT Cmd:  
     * The command name documented in [Z-Stack Monitor and Test API.pdf](https://github.com/jackchased/cc-znp/blob/master/documents/Z-Stack%20Monitor%20and%20Test%20API.pdf).  
-* cc-znp API:  
-    * The API name, in cc-znp, according to a Z-Stack MT API.  
+* cc-znp CmdId:  
+    * The cmdId name, in cc-znp, according to a Z-Stack MT API.  
 * Type:  
     * Synchronous or Asynchronous request.  
 * Arguments:  
-    * Required parameters of a cc-znp API.  
+    * Required parameters of a cc-znp CmdId.  
 * Result:  
-    * Resulted data object passing to the cc-znp API callback.  
+    * Resulted data object passing to the [request() API](#API_request) callback.  
 
 **Indication Table:**  
 * msg.ind:  
@@ -313,23 +308,23 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 * msg.data:  
     * An AREQ message content.  
 
-**The APIs of the subsystem:**  
-* [znp.sysRequest APIs](#SysTable)  
-* [znp.macRequest APIs](#MacTable)  
-* [znp.afRequest APIs](#AfTable)  
-* [znp.zdoRequest APIs](#ZdoTable)  
-* [znp.sapiRequest APIs](#SapiTable)  
-* [znp.utilRequest APIs](#UtilTable)  
-* [znp.dbgRequest APIs](#DbgTable)  
-* [znp.appRequest APIs](#AppTable)  
+**The cc-znp commands:**  
+* [SYS Table](#SysTable)  
+* [MAC Table](#MacTable)  
+* [AF Table](#AfTable)  
+* [ZDO Tables](#ZdoTable)  
+* [SAPI Table](#SapiTable)  
+* [UTIL Table](#UtilTable)  
+* [DBG Table](#DbgTable)  
+* [APP Table](#AppTable)  
 
 *************************************************
 <a name="SysTable"></a>
-### 8.1 znp.sysRequest APIs  
+### 8.1 SYS Table  
 
 * Commands  
 
-    | ZigBee MT API               | cc-znp API           | Type     | Arguments                                           | Result                                                    |
+    | ZigBee MT Cmd               | cc-znp CmdId         | Type     | Arguments                                           | Result                                                    |
     |-----------------------------|----------------------|----------|-----------------------------------------------------|-----------------------------------------------------------|
     | SYS_RESET_REQ               | resetReq             | AREQ     | `{ type }`                                          | _none_                                                    |
     | SYS_PING                    | ping                 | SREQ     | `{ }`                                               | `{ capabilities }`                                        |
@@ -364,7 +359,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API          | cc-znp Event | msg.ind          | msg.data                                                         |
+    | ZigBee MT Cmd          | cc-znp Event | msg.ind          | msg.data                                                         |
     |------------------------|--------------|------------------|------------------------------------------------------------------|
     | SYS_RESET_IND          |     AREQ     | resetInd         | `{ reason, transportrev, productid, majorrel, minorrel, hwrev }` |
     | SYS_OSAL_TIMER_EXPIRED |     AREQ     | osalTimerExpired | `{ id }`                                                         |
@@ -372,11 +367,11 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="MacTable"></a>
-### 8.2 znp.macRequest APIs  
+### 8.2 MAC Table  
 
 * Commands  
 
-    | ZigBee MT API        | cc-znp API      | Type | Arguments                                                                                                                                                                                                                                                                             | Result             |
+    | ZigBee MT Cmd        | cc-znp CmdId    | Type | Arguments                                                                                                                                                                                                                                                                             | Result             |
     |----------------------|-----------------|------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|
     | MAC_RESET_REQ        | resetReq        | SREQ | `{ setdefault }`                                                                                                                                                                                                                                                                      | `{ status }`       |
     | MAC_INIT             | init            | SREQ | `{ }`                                                                                                                                                                                                                                                                          | `{ status }`       |
@@ -398,7 +393,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API         | cc-znp Event | msg.ind         | msg.data                                                                                                                                                                                                                                               |
+    | ZigBee MT Cmd         | cc-znp Event | msg.ind         | msg.data                                                                                                                                                                                                                                               |
     |-----------------------|--------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | MAC_SYNC_LOSS_IND     | AREQ         | syncLossInd     | `{ status, panid, logicalchannel, channelpage, keysource, securitylevel, keyidmode, keyindex }`                                                                                                                                                        |
     | MAC_ASSOCIATE_IND     | AREQ         | associateInd    | `{ deviceextendedaddress, capabilities, keysource, securitylevel, keyidmode, keyindex }`                                                                                                                                                               |
@@ -418,11 +413,11 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="AfTable"></a>
-### 8.3 znp.afRequest APIs  
+### 8.3 AF Table  
 
 * Commands  
 
-    | ZigBee MT API           | cc-znp API        | Type | Arguments                                                                                                                               | Result                               |
+    | ZigBee MT Cmd           | cc-znp CmdId      | Type | Arguments                                                                                                                               | Result                               |
     |-------------------------|-------------------|------|-----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
     | AF_REGISTER             | register          | SREQ | `{ endpoint, appprofid, appdeviceid, appdevver, latencyreq, appnuminclusters, appinclusterlist, appnumoutclusters, appoutclusterlist }` | `{ status }`                         |
     | AF_DATA_REQUEST         | dataRequest       | SREQ | `{ dstaddr, destendpoint, srcendpoint, clusterid, transid, options, radius, len, data }`                                                | `{ status }`                         |
@@ -437,7 +432,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API       | cc-znp Event | msg.ind        | msg.data                                                                                                                                                         |
+    | ZigBee MT Cmd       | cc-znp Event | msg.ind        | msg.data                                                                                                                                                         |
     |---------------------|--------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | AF_DATA_CONFIRM     | AREQ         | dataConfirm    | `{ status, endpoint, transid }`                                                                                                                                  |
     | AF_REFLECT_ERROR    | AREQ         | reflectError   | `{ status, endpoint, transid, dstaddrmode, dstaddr }`                                                                                                            |
@@ -446,11 +441,11 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="ZdoTable"></a>
-### 8.4 znp.zdoRequest APIs  
+### 8.4 ZDO Table  
 
 * Commands  
 
-    | ZigBee MT API                    | cc-znp API               | Type | Arguments                                                                                                               | Result                                                                                                         |
+    | ZigBee MT Cmd                    | cc-znp CmdId             | Type | Arguments                                                                                                               | Result                                                                                                         |
     |----------------------------------|--------------------------|------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
     | ZDO_NWK_ADDR_REQ                 | nwkAddrReq               | SREQ | `{ ieeeaddr, reqtype, startindex }`                                                                                     | `{ status }`                                                                                                   |
     | ZDO_IEEE_ADDR_REQ                | ieeeAddrReq              | SREQ | `{ shortaddr, reqtype, startindex }`                                                                                    | `{ status }`                                                                                                   |
@@ -506,7 +501,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API            | cc-znp Event | msg.ind           | msg.data                                                                                                                                                                                                  |
+    | ZigBee MT Cmd            | cc-znp Event | msg.ind           | msg.data                                                                                                                                                                                                  |
     |--------------------------|--------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
     | ZDO_NWK_ADDR_RSP         | AREQ         | nwkAddrRsp        | `{ status, ieeeaddr, nwkaddr, startindex, numassocdev, assocdevlist }`                                                                                                                                    |
     | ZDO_IEEE_ADDR_RSP        | AREQ         | ieeeAddrRsp       | `{ status, ieeeaddr, nwkaddr, startindex, numassocdev, assocdevlist }`                                                                                                                                    |
@@ -544,11 +539,11 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="SapiTable"></a>
-### 8.5 znp.sapiRequest APIs  
+### 8.5 SAPI Table  
 
 * Commands  
 
-    | ZigBee MT API             | cc-znp API           | Type | Arguments                                                                         | Result                             |
+    | ZigBee MT Cmd             | cc-znp CmdId         | Type | Arguments                                                                         | Result                             |
     |---------------------------|----------------------|------|-----------------------------------------------------------------------------------|------------------------------------|
     | ZB_SYSTEM_RESET           | systemReset          | AREQ | `{ }`                                                                             | _none_                             |
     | ZB_START_REQUEST          | startRequest         | SREQ | `{ }`                                                                             | `{ }`                              |
@@ -563,7 +558,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API              | cc-znp Event | msg.ind               | msg.data                            |
+    | ZigBee MT Cmd              | cc-znp Event | msg.ind               | msg.data                            |
     |----------------------------|--------------|-----------------------|-------------------------------------|
     | ZB_START_CONFIRM           | AREQ         | startConfirm          | `{ status }`                        |
     | ZB_BIND_CONFIRM            | AREQ         | bindConfirm           | `{ commandid, status }`             |
@@ -574,11 +569,11 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="UtilTable"></a>
-### 8.6 znp.utilRequest APIs  
+### 8.6 UTIL Table  
 
 * Commands  
 
-    | ZigBee MT API                    | cc-znp API              | Type | Arguments                                                       | Result                                                                                        |
+    | ZigBee MT Cmd                    | cc-znp CmdId            | Type | Arguments                                                       | Result                                                                                        |
     |----------------------------------|-------------------------|------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
     | UTIL_GET_DEVICE_INFO             | getDeviceInfo           | SREQ | `{ }`                                                           | `{ status, ieeeaddr, shortaddr, devicetype, devicestate, numassocdevices, assocdeviceslist }` |
     | UTIL_GET_NV_INFO                 | getNvInfo               | SREQ | `{ }`                                                           | `{ status, ieeeaddr, scanchannels, panid, securitylevel, preconfigkey }`                      |
@@ -616,18 +611,18 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * Indication  
 
-    | ZigBee MT API              | cc-znp Event | msg.ind            | msg.data                                     |
+    | ZigBee MT Cmd              | cc-znp Event | msg.ind            | msg.data                                     |
     |----------------------------|--------------|--------------------|----------------------------------------------|
     | UTIL_SYNC_REQ              | AREQ         | syncReq            | `{ }`                                        |
     | UTIL_ZCL_KEY_ESTABLISH_IND | AREQ         | zclKeyEstablishInd | `{ taskid, event, status, waittime, suite }` |
 
 *************************************************
 <a name="DbgTable"></a>
-### 8.7 znp.dbgRequest APIs  
+### 8.7 DBG Table  
 
 * Commands  
 
-    | ZigBee MT API       | cc-znp API   | Type | Arguments                    | Result       |
+    | ZigBee MT Cmd       | cc-znp CmdId | Type | Arguments                    | Result       |
     |---------------------|--------------|------|------------------------------|--------------|
     | DEBUG_SET_THRESHOLD | setThreshold | SREQ | `{ componentid, threshold }` | `{ status }` |
     | DEBUG_MSG           | msg          | AREQ | `{ length, string }`         | _none_       |
@@ -638,17 +633,48 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="AppTable"></a>
-### 8.8 znp.appRequest APIs  
+### 8.8 APP Table  
 
 * Commands  
 
-    | ZigBee MT API  | cc-znp API  | Type | Arguments                                                                | Result       |
+    | ZigBee MT Cmd  | cc-znp CmdId| Type | Arguments                                                                | Result       |
     |----------------|-------------|------|--------------------------------------------------------------------------|--------------|
     | APP_MSG        | msg         | SREQ | `{ appendpoint, destaddress, destendpoint, clusterid, msglen, message }` | `{ status }` |
     | APP_USER_TEST  | userTest    | SREQ | `{ srcep, commandid, param1, param2 }`                                   | `{ status }` |
 
 * Indication  
 
-    | ZigBee MT API  | cc-znp Event | msg.ind  | msg.data                                              |
+    | ZigBee MT Cmd  | cc-znp Event | msg.ind  | msg.data                                              |
     |----------------|--------------|----------|-------------------------------------------------------|
     |                | AREQ         | zllTlInd | `{ nwkaddr, endpoint, profileid, deviceid, version }` |
+
+<a name="Contributors"></a>
+## 8. Contributors  
+
+* [Jack Wu](https://www.npmjs.com/~jackchased)  
+* [Simen Li](https://www.npmjs.com/~simenkid)  
+
+<a name="License"></a>
+## 9. License  
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Jack Wu <jackchased@gmail.com> and Simen Li <simenkid@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
