@@ -141,9 +141,28 @@ Invoke TI Z-Stack Monitor and Test Commands.
 **Arguments:**  
 
 1. `subsys` (_Number_ | _String_): Subsystem, i.e., set it to `1` or `'SYS'` to invoke a SYS command.  
+
 2. `cmdId` (_Number_ | _String_): Command id of which subsys command you like to invoke.  
+
 3. `valObj` (_Object_): An argument object passes to the command.  
+
 4. `callback` (_Function_): `function (err, result) { ... }`. Get called when the response is received.  
+
+* Subsystem  
+
+    ```js
+    {
+        "SYS": 1,
+        "MAC": 2,
+        "NWK": 3,
+        "AF": 4,
+        "ZDO": 5,
+        "SAPI": 6,
+        "UTIL": 7,
+        "DBG": 8,
+        "APP": 9
+    }
+    ```
 
 **Returns:**  
 
@@ -320,7 +339,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="SysTable"></a>
-### 8.1 SYS Table  
+### 7.1 SYS Table  
 
 * Commands  
 
@@ -367,7 +386,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="MacTable"></a>
-### 8.2 MAC Table  
+### 7.2 MAC Table  
 
 * Commands  
 
@@ -413,7 +432,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="AfTable"></a>
-### 8.3 AF Table  
+### 7.3 AF Table  
 
 * Commands  
 
@@ -441,7 +460,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="ZdoTable"></a>
-### 8.4 ZDO Table  
+### 7.4 ZDO Table  
 
 * Commands  
 
@@ -539,7 +558,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="SapiTable"></a>
-### 8.5 SAPI Table  
+### 7.5 SAPI Table  
 
 * Commands  
 
@@ -569,7 +588,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="UtilTable"></a>
-### 8.6 UTIL Table  
+### 7.6 UTIL Table  
 
 * Commands  
 
@@ -618,7 +637,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="DbgTable"></a>
-### 8.7 DBG Table  
+### 7.7 DBG Table  
 
 * Commands  
 
@@ -633,7 +652,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 *************************************************
 <a name="AppTable"></a>
-### 8.8 APP Table  
+### 7.8 APP Table  
 
 * Commands  
 
