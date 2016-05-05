@@ -142,11 +142,11 @@ Invoke TI Z-Stack Monitor and Test Commands.
 
 1. `subsys` (_Number_ | _String_): Subsystem, i.e., set it to `1` or `'SYS'` to invoke a SYS command.  
 
-2. `cmdId` (_Number_ | _String_): Command id of which subsys command you like to invoke.  
+2. `cmdId` (_Number_ | _String_): Command id of which subsys command you like to invoke. See [Z-Stack MT API Reference Tables](#ApiTables) Section.  
 
-3. `valObj` (_Object_): An argument object passes to the command.  
+3. `valObj` (_Object_): An argument object of the command.  
 
-4. `callback` (_Function_): `function (err, result) { ... }`. Get called when the response is received.  
+4. `callback` (_Function_): `function (err, result) { ... }`. Get called when the 'SRSP' is received.  
 
 * Subsystem  
 
@@ -219,6 +219,30 @@ znp.utilRequest('setPanid', { panid: 0xFFFF }, function (err, result) {
 ### .sendCmd(type, subsys, cmdId, payload)
 
 Exports the dependencies [Unpi](https://www.npmjs.com/package/unpi) [send() API](https://www.npmjs.com/package/unpi#API_send), you can take it to send some binary data.  
+
+**Arguments:**  
+
+1. `type` (_Number_ | _String_): The [command type](https://www.npmjs.com/package/unpi#Appendix). For exmaple, set `type` to `1` or `'SREQ'` to send a synchronous command.  
+
+2. `subsys` (_Number_ | _String_): The [subsystem](https://www.npmjs.com/package/unpi#Appendix). For example, send a command of subsystem 'RPC_SYS_UTIL', you can set `subsys` to `7`, `'RPC_SYS_UTIL'`, or simply `'UTIL'` (the prefix `'RPC_SYS_'` can be ignored).  
+
+3. `cmdId` (_Number_): The command id which is a number according to which subsystem you are using.  
+
+4. `payload` (_Buffer_): The data payload.  
+
+**Returns:**  
+
+* (_Buffer_): Buffer of the built command packet.  
+
+**Examples:**  
+
+```js
+// The following calls do the same thing
+znp.send('AREQ', 'SYS', 0, new Buffer([ 0 ]));
+znp.send('AREQ', 1, 0, new Buffer([ 0 ]));
+znp.send(2, 'SYS', 0, new Buffer([ 0 ]));
+znp.send(2, 1, 0, new Buffer([ 0 ]));
+```
 
 <a name="Events"></a>
 ## 6. Events  
