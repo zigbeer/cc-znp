@@ -3622,6 +3622,9 @@
                     },
                     {
                         "keyseqnum": 0
+                    },
+                    {
+                        "key": 13
                     }
                 ],
                 "rsp": [
@@ -3657,25 +3660,25 @@
                 "req": [],
                 "rsp": [
                     {
-                        "nwkdevaddress": 1
+                        "shortaddr": 1
                     },
                     {
                         "devstate": 0
                     },
                     {
-                        "nwkpanid": 1
+                        "panid": 1
                     },
                     {
-                        "nwkcoordaddress": 1
+                        "parentaddr": 1
                     },
                     {
                         "extendedpanid": 3
                     },
                     {
-                        "nwkcoordextaddress": 3
+                        "parentextaddr": 3
                     },
                     {
-                        "nwklogicalchannel": 0
+                        "channel": 0
                     }
                 ]
             }
@@ -4163,10 +4166,10 @@
             "params": {
                 "req": [
                     {
-                        "shift": 0
+                        "keys": 0
                     },
                     {
-                        "key": 0
+                        "shift": 0
                     }
                 ],
                 "rsp": [
