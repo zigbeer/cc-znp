@@ -2549,6 +2549,9 @@
             "params": {
                 "req": [
                     {
+                        "addrmode": 0
+                    },
+                    {
                         "dstaddr": 1
                     },
                     {
