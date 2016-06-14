@@ -27,7 +27,7 @@ This project aims to provide an opportunity for those who like to build IoT appl
 
 The following diagram shows the scenario when CC253X operates as a ZNP. In this case, the ZigBee stack is running on CC253X, and the application (app) is running on an external host, i.e. a microcontroller or an application processor. The app can do its job in a resourceful environment and work with ZNP for network transportation.  
 
-![Network Processor Configuration](https://github.com/jackchased/cc-znp/blob/master/documents/znp.png)
+![Network Processor Configuration](https://github.com/zigbeer/documents/blob/master/cc-znp/znp.png)
 
 <a name="Installation"></a>
 ## 3. Installation  
@@ -335,7 +335,7 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 **Commands Table:**  
 * ZigBee MT Cmd:  
-    * The command name documented in [Z-Stack Monitor and Test API.pdf](https://github.com/jackchased/cc-znp/blob/master/documents/Z-Stack%20Monitor%20and%20Test%20API.pdf).  
+    * The command name documented in [Z-Stack Monitor and Test API.pdf](https://github.com/zigbeer/documents/blob/master/cc-znp/Z-Stack%20Monitor%20and%20Test%20API.pdf).  
 * cc-znp CmdId:  
     * The cmdId name, in cc-znp, according to a Z-Stack MT API.  
 * Type:  
