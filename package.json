@@ -4,7 +4,7 @@
   "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor over a serial port.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "make test-all"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
     "unpi": "^0.9.4"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "chance": "^1.0.1",
+    "mocha": "^2.5.3",
     "should": "^8.2.2"
   }
 }
