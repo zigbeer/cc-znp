@@ -5,7 +5,7 @@ cc-znp
 
 [![NPM](https://nodei.co/npm/cc-znp.png?downloads=true)](https://nodei.co/npm/cc-znp/)  
 
-[![Travis branch](https://img.shields.io/travis/simenkid/cc-znp/master.svg?maxAge=2592000)](https://travis-ci.org/simenkid/cc-znp)
+[![Travis branch](https://img.shields.io/travis/zigbeer/cc-znp/master.svg?maxAge=2592000)](https://travis-ci.org/zigbeer/cc-znp)
 [![npm](https://img.shields.io/npm/v/cc-znp.svg?maxAge=2592000)](https://www.npmjs.com/package/cc-znp)
 [![npm](https://img.shields.io/npm/l/cc-znp.svg?maxAge=2592000)](https://www.npmjs.com/package/cc-znp)
 
