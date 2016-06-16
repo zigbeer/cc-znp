@@ -1,6 +1,6 @@
 {
   "name": "cc-znp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor over a serial port.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jackchased/cc-znp.git"
+    "url": "https://github.com/zigbeer/cc-znp.git"
   },
   "keywords": [
     "zigbee",
