@@ -20,9 +20,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jackchased/cc-znp/issues"
+    "url": "https://github.com/zigbeer/cc-znp/issues"
   },
-  "homepage": "https://github.com/jackchased/cc-znp",
+  "homepage": "https://github.com/zigbeer/cc-znp",
   "dependencies": {
     "enum": "^2.3.0",
     "serialport": "^2.0.6",
