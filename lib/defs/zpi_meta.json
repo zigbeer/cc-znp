@@ -519,7 +519,7 @@
                         "subid": 1
                     },
                     {
-                        "length": 2
+                        "len": 2
                     }
                 ],
                 "rsp": [
@@ -568,7 +568,7 @@
                 ],
                 "rsp": [
                     {
-                        "length": 0
+                        "len": 0
                     }
                 ]
             }
@@ -591,7 +591,7 @@
                         "offset": 1
                     },
                     {
-                        "length": 0
+                        "len": 0
                     }
                 ],
                 "rsp": [
@@ -599,7 +599,7 @@
                         "status": 0
                     },
                     {
-                        "length": 7
+                        "len": 7
                     },
                     {
                         "value": 11
@@ -625,7 +625,7 @@
                         "offset": 1
                     },
                     {
-                        "length": 0
+                        "len": 0
                     },
                     {
                         "value": 13
@@ -651,9 +651,9 @@
                     },
                     {
                         "subid": 1
-                    }
+                    },
                     {
-                        "length": 0
+                        "len": 0
                     },
                     {
                         "value": 13
