@@ -3,11 +3,20 @@ var expect = require('chai').expect,
     chance = new Chance();
 
 var Unpi = require('unpi'),
-    Concentrate = Unpi.Concentrate;
+    Concentrate = Unpi.Concentrate,
+    DChunks = Unpi.DChunks,
+    ru = DChunks().Rule();
 
 var zmeta = require('../lib/zmeta'),
     ZpiObject = require('../lib/zpiObject'),
     preBufLen;
+
+ru.clause('dynbuffer', function (name) {
+    this.tap(function () {
+        this.vars[name] = this.vars.preLenData;
+        delete this.vars.preLenData;
+    });
+});
 
 describe('#.parse', function () {
     zmeta.Subsys.enums.forEach(function (subsysObj) {
