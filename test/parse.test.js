@@ -46,7 +46,14 @@ describe('#.parse', function () {
 
             rspParams.forEach(function (arg) {
                 arg.value = randomArgForParse(arg.type);
-                args[arg.name] = arg.value;
+
+                if (arg.type === 'devlistbuffer') {
+                    args[arg.name] = bufToArray(arg.value, 'uint16');
+                } else if (arg.type === 'nwklistbuffer') {
+                    args[arg.name] = bufToList(arg.value);
+                } else {
+                    args[arg.name] = arg.value;
+                }
             });
 
             argObj.args = rspParams;
@@ -90,9 +97,21 @@ function randomArgForParse(type) {
             return testBuf;
         case 'buffer':
         case 'devlistbuffer':
+            bufLen = chance.integer({min: 0, max: 128}) * 2;  // MT CMD Max 256bytes
+            testBuf = new Buffer(bufLen);
+            for (k = 0; k < bufLen; k += 1) {
+                testBuf[k] = chance.integer({min: 0, max: 255});
+            }
+            return testBuf;
         case 'nwklistbuffer':
+            bufLen = chance.integer({min: 0, max: 21}) * 12;  // MT CMD Max 256bytes
+            testBuf = new Buffer(bufLen);
+            for (k = 0; k < bufLen; k += 1) {
+                testBuf[k] = chance.integer({min: 0, max: 255});
+            }
+            return testBuf;
         case 'zdomsgcb':
-            bufLen = chance.integer({min: 0, max: 200}); // MT CMD Max 256bytes
+            bufLen = chance.integer({min: 0, max: 200});      // MT CMD Max 256bytes
             testBuf = new Buffer(bufLen);
             for (k = 0; k < bufLen; k += 1) {
                 testBuf[k] = chance.integer({min: 0, max: 255});
@@ -179,4 +198,54 @@ function framer() {
     });
 
     return dataBuf.result();
+}
+
+function bufToList(buf) {
+    var loopCount = (buf.length / 12),
+        start = 0,
+        end = 12,
+        list = [];
+
+    function getList(buffer) {
+        var item = {},
+            i = 0;
+        
+        item.neightborPanId = buffer.readUInt16LE(i);
+        i += (2+6);
+        item.logicalChannel = buffer.readUInt8(i);
+        i += 1;
+        item.stackProfile = buffer.readUInt8(i) & 0x0F;
+        item.zigbeeVersion = buffer.readUInt8(i) & 0xF0;
+        i += 1;
+        item.beaconOrder = buffer.readUInt8(i) & 0x0F;
+        item.superFrameOrder = (buffer.readUInt8(i) & 0xF0) >> 4;
+        i += 1;
+        item.permitJoin = buffer.readUInt8(i);
+        i += 1;
+
+        return item;
+    }
+
+    for (var i = 0; i < loopCount; i += 1) {
+        list.push(getList(buf.slice(start, end)));
+        start = start + 12;
+        end = end + 12;
+    }
+
+    return list;
+}
+
+function bufToArray(buf, nip) {
+    var i,
+        nipArr = [];
+    if (nip === 'uint8') {
+        for (i = 0; i < buf.length; i += 1) {
+            nipArr.push(buf.readUInt8(i));
+        }
+    } else if (nip === 'uint16') {
+        for (i = 0; i < buf.length; i += 2) {
+            nipArr.push(buf.readUInt16LE(i));
+        }
+    }
+    return nipArr;
 }
