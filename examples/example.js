@@ -1,10 +1,9 @@
 var ccznp = require('../index.js');
 
 var spCfg = {
-    path: "/dev/ttyACM0",
+    path: "/dev/ttyUSB0",
     options: {
         baudrate: 115200,
-        flowControl: true,
         rtscts: true
     }
 };

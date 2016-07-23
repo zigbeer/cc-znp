@@ -1,6 +1,6 @@
 {
   "name": "cc-znp",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor over a serial port.",
   "main": "index.js",
   "scripts": {
@@ -14,9 +14,19 @@
     "zigbee",
     "cc253x"
   ],
-  "author": "Jack Wu <jackchased@gmail.com>",
+  "author": {
+    "name": "Jack Wu",
+    "email": "jackchased@gmail.com"
+  },
   "contributors": [
-    "Simen Li <simenkid@gmail.com>"
+    {
+      "name": "Simen Li",
+      "email": "simenkid@gmail.com"
+    },
+    {
+      "name": "Hedy Wang",
+      "email": "hedywings@gmail.com"
+    }
   ],
   "license": "MIT",
   "bugs": {
@@ -25,7 +35,7 @@
   "homepage": "https://github.com/zigbeer/cc-znp",
   "dependencies": {
     "enum": "^2.3.0",
-    "serialport": "^2.0.6",
+    "serialport": "^4.0.1",
     "unpi": "^0.9.8"
   },
   "devDependencies": {

@@ -6,7 +6,7 @@ var ccznp = require('../index');
 
 describe('Signature Check', function () {
     it('ccznp.init(spCfg[, callback])', function () {
-        expect(function () { ccznp.init({path: 'xxx'}); }).to.not.throw();
+        expect(function () { ccznp.init({ path: 'xxx' }); }).to.not.throw();
 
         ccznp._sp = null;
         expect(function () { ccznp.init({}); }).to.throw();
@@ -94,11 +94,14 @@ describe('Functional Check', function () {
             ccznp._sp.open = function (callback) {
                 callback(null);
             };
-            ccznp.init({ path: 'xxx' });
+            ccznp.init({ path: 'xxx' }, function (err) {
+                if (!err)
+                    ccznp.emit('_ready');
+            });
         });
     });
 
-    this.timeout(5000);    
+    this.timeout(5000);
     it('ccznp.request() - timeout', function (done) {
         ccznp._unpi.send = function () {};
         ccznp.request('SYS', 'ping', {}, function (err, result) {

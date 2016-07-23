@@ -53,7 +53,6 @@ var spCfg = {
     path: '/dev/ttyUSB0',
     options: {
         baudrate: 115200,
-        flowControl: true,
         rtscts: true
     }
 };
@@ -107,7 +106,6 @@ var spCfg = {
     path: '/dev/ttyUSB0',
     options: {
         baudrate: 115200,
-        flowControl: true,
         rtscts: true
     }
 };
@@ -713,13 +711,15 @@ These tables are cross-references between the **Z-Stack Monitor and Test API** a
 
 * [Jack Wu](https://www.npmjs.com/~jackchased)  
 * [Simen Li](https://www.npmjs.com/~simenkid)  
+* [Hedy Wang](https://www.npmjs.com/~hedywings)  
 
 <a name="License"></a>
 ## 9. License  
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Jack Wu <jackchased@gmail.com> and Simen Li <simenkid@gmail.com>
+Copyright (c) 
+Jack Wu <jackchased@gmail.com>, Simen Li <simenkid@gmail.com>, and Hedy Wang <hedywings@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
