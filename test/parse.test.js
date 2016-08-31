@@ -18,6 +18,45 @@ ru.clause('dynbuffer', function (name) {
     });
 });
 
+ru.clause('nwklistbuffer', function (name, bufLen) {
+    this.buffer(name, bufLen - 6).tap(function () {
+        var buf = this.vars[name],
+            list = [],
+            listcount,
+            getList,
+            start = 0,
+            end,
+            len,
+            i;
+
+        if (name === 'networklist') {
+            listcount = buf.length / 12;
+            end = len =12;
+            getList = networkList;
+        } else if (name === 'neighborlqilist') {
+            listcount = buf.length / 22;
+            end = len =22;
+            getList = neighborLqiList;
+        } else if (name === 'routingtablelist') {
+            listcount = buf.length / 5;
+            end = len =5;
+            getList = routingTableList;
+        } else {
+            listcount = buf.length / 21;
+            this.vars[name] = bindTableList(buf, listcount);
+            return;
+        }
+
+        for (i = 0; i < listcount; i += 1) {
+            list.push(getList(buf.slice(start, end)));
+            start = start + len;
+            end = end + len;
+        }
+
+        this.vars[name] = list;
+    });
+});
+
 describe('#.parse', function () {
     zmeta.Subsys.enums.forEach(function (subsysObj) {
         var subsys = subsysObj.key;
@@ -45,12 +84,14 @@ describe('#.parse', function () {
             }
 
             rspParams.forEach(function (arg) {
-                arg.value = randomArgForParse(arg.type);
+                arg.value = randomArgForParse(arg.type, arg.name);
 
                 if (arg.type === 'devlistbuffer') {
                     args[arg.name] = bufToArray(arg.value, 'uint16');
                 } else if (arg.type === 'nwklistbuffer') {
-                    args[arg.name] = bufToList(arg.value);
+                    args[arg.name] = bufToList(arg.value, arg.name);
+                } else if (arg.name === 'beaconlist'){
+                    args[arg.name] = bufToList(arg.value, arg.name);
                 } else {
                     args[arg.name] = arg.value;
                 }
@@ -68,7 +109,7 @@ describe('#.parse', function () {
     });
 });
 
-function randomArgForParse(type) {
+function randomArgForParse(type, name) {
     var bufLen,
         testBuf,
         testArr,
@@ -104,7 +145,14 @@ function randomArgForParse(type) {
             }
             return testBuf;
         case 'nwklistbuffer':
-            bufLen = chance.integer({min: 0, max: 21}) * 12;  // MT CMD Max 256bytes
+            if (name === 'networklist')
+                bufLen = chance.integer({min: 0, max: 20}) * 12;
+            else if (name === 'neighborlqilist')
+                bufLen = chance.integer({min: 0, max: 10}) * 22;
+            else if (name === 'routingtablelist')
+                bufLen = chance.integer({min: 0, max: 20}) * 5;
+            else if (name === 'bindingtablelist')
+                bufLen = chance.integer({min: 0, max: 10}) * 21;
             testBuf = new Buffer(bufLen);
             for (k = 0; k < bufLen; k += 1) {
                 testBuf[k] = chance.integer({min: 0, max: 255});
@@ -200,39 +248,206 @@ function framer() {
     return dataBuf.result();
 }
 
-function bufToList(buf) {
-    var loopCount = (buf.length / 12),
+function bufToList(buf, listType) {
+    var list = [],
+        listcount,
+        getList,
         start = 0,
-        end = 12,
-        list = [];
+        end,
+        len,
+        i;
 
-    function getList(buffer) {
-        var item = {},
-            i = 0;
-        
-        item.neightborPanId = buffer.readUInt16LE(i);
-        i += (2+6);
-        item.logicalChannel = buffer.readUInt8(i);
-        i += 1;
-        item.stackProfile = buffer.readUInt8(i) & 0x0F;
-        item.zigbeeVersion = buffer.readUInt8(i) & 0xF0;
-        i += 1;
-        item.beaconOrder = buffer.readUInt8(i) & 0x0F;
-        item.superFrameOrder = (buffer.readUInt8(i) & 0xF0) >> 4;
-        i += 1;
-        item.permitJoin = buffer.readUInt8(i);
-        i += 1;
-
-        return item;
+    if (listType === 'networklist') {
+        listcount = buf.length / 12;
+        end = len = 12;
+        getList = networkList;
+    } else if (listType === 'neighborlqilist') {
+        listcount = buf.length / 22;
+        end = len = 22;
+        getList = neighborLqiList;
+    } else if (listType === 'routingtablelist') {
+        listcount = buf.length / 5;
+        end = len = 5;
+        getList = routingTableList;
+    } else if (listType === 'bindingtablelist'){
+        listcount = buf.length / 21;
+        list = bindTableList(buf, listcount);
+        return list;
+    } else if (listType === 'beaconlist') {
+        listcount = buf.length / 21;
+        end = len = 21;
+        getList = beaconList;
     }
 
-    for (var i = 0; i < loopCount; i += 1) {
+    for (i = 0; i < listcount; i += 1) {
         list.push(getList(buf.slice(start, end)));
-        start = start + 12;
-        end = end + 12;
+        start = start + len;
+        end = end + len;
     }
 
     return list;
+}
+
+function networkList(buf) {
+    var item = {},
+        i = 0;
+
+    item.neightborPanId = buf.readUInt16LE(i);
+    i += (2+6);
+    item.logicalChannel = buf.readUInt8(i);
+    i += 1;
+    item.stackProfile = buf.readUInt8(i) & 0x0F;
+    item.zigbeeVersion = (buf.readUInt8(i) & 0xF0) >> 4;
+    i += 1;
+    item.beaconOrder = buf.readUInt8(i) & 0x0F;
+    item.superFrameOrder = (buf.readUInt8(i) & 0xF0) >> 4;
+    i += 1;
+    item.permitJoin = buf.readUInt8(i);
+    i += 1;
+
+    return item;
+}
+
+function neighborLqiList(buf) {
+    var item = {},
+        i = 0;
+
+    item.extPandId = addrBuf2Str(buf.slice(0, 8));
+    i += 8;
+    item.extAddr = addrBuf2Str(buf.slice(8, 16));
+    i += 8;
+    item.nwkAddr = buf.readUInt16LE(i);
+    i += 2;
+    item.deviceType = buf.readUInt8(i) & 0x03;
+    item.rxOnWhenIdle = (buf.readUInt8(i) & 0x0C) >> 2;
+    item.relationship = (buf.readUInt8(i) & 0x70) >> 4;
+    i += 1;
+    item.permitJoin = buf.readUInt8(i) & 0x03;
+    i += 1;
+    item.depth = buf.readUInt8(i);
+    i += 1;
+    item.lqi = buf.readUInt8(i);
+    i += 1;
+
+    return item;
+}
+
+function routingTableList(buf) {
+    var item = {},
+        i = 0;
+
+    item.destNwkAddr = buf.readUInt16LE(i);
+    i += 2;
+    item.routeStatus = buf.readUInt8(i) & 0x07;
+    i += 1;
+    item.nextHopNwkAddr = buf.readUInt16LE(i);
+    i += 2;
+
+    return item;
+}
+
+function bindTableList(buf, listcount) {
+    var itemObj,
+        list = [],
+        len = 21,
+        start = 0,
+        end = len,
+        i;
+
+    function getList(buf) {
+        var itemObj = {
+                item: {},
+                thisItemLen: 0
+            },
+            itemLen = 21,
+            item = {},
+            i = 0;
+
+        item.srcAddr = addrBuf2Str(buf.slice(0, 8));
+        i += 8;
+        item.srcEp = buf.readUInt8(i);
+        i += 1;
+        item.clusterId = buf.readUInt16LE(i);
+        i += 2;
+        item.dstAddrMode = buf.readUInt8(i);
+        i += 1;
+        item.dstAddr = addrBuf2Str(buf.slice(12, 20));
+        i += 8;
+
+        if (item.dstAddrMode === 3) {  // 'Addr64Bit'
+            item.dstEp = buf.readUInt8(i);
+            i += 1;
+        } else {
+            itemLen = itemLen - 1;
+        }
+
+        itemObj.thisItemLen = itemLen;
+        itemObj.item = item;
+        return itemObj;
+    }
+
+    for (i = 0; i < listcount; i += 1) {
+        itemObj = getList(buf.slice(start, end));
+        list.push(itemObj.item);
+
+        start = start + itemObj.thisItemLen;
+        if (i === listcount - 2) {  // for the last item, we don't know the length of bytes
+            end = buf.length;       // so, assign 'end' by the buf length to avoid memory leak.
+        } else {
+            end = start + len;      // for each item, take 21 bytes from buf to parse
+        }
+    }
+
+    return list;
+}
+
+function beaconList(buf) {
+    var item = {},
+        i = 0;
+
+    item.srcAddr = buf.readUInt16LE(i);
+    i += 2;
+    item.padId = buf.readUInt16LE(i);
+    i += 2;
+    item.logicalChannel = buf.readUInt8(i);
+    i += 1;
+    item.permitJoin = buf.readUInt8(i);
+    i += 1;
+    item.routerCapacity = buf.readUInt8(i);
+    i += 1;
+    item.deviceCapacity = buf.readUInt8(i);
+    i += 1;
+    item.protocolVersion = buf.readUInt8(i);
+    i += 1;
+    item.stackProfile = buf.readUInt8(i);
+    i += 1;
+    item.lqi = buf.readUInt8(i);
+    i += 1;
+    item.depth = buf.readUInt8(i);
+    i += 1;
+    item.updateId = buf.readUInt8(i);
+    i += 1;
+    item.extPandId = addrBuf2Str(buf.slice(13));
+    i += 8;
+
+    return item;
+}
+
+function addrBuf2Str(buf) {
+    var bufLen = buf.length,
+        val,
+        strChunk = '0x';
+
+    for (var i = 0; i < bufLen; i += 1) {
+        val = buf.readUInt8(bufLen - i - 1);
+        if (val <= 15) {
+            strChunk += '0' + val.toString(16);
+        } else {
+            strChunk += val.toString(16);
+        }
+    }
+
+    return strChunk;
 }
 
 function bufToArray(buf, nip) {
