@@ -1,7 +1,7 @@
 cc-znp
 ========================
 
-**cc-znp** is the interface for a host to communicate with TI **CC**253X **Z**igBee **N**etwork **P**rocessor(ZNP) over a serial port.  
+The interface for a host to communicate with TI **CC**253X **Z**igBee **N**etwork **P**rocessor(ZNP) over a serial port.  
 
 [![NPM](https://nodei.co/npm/cc-znp.png?downloads=true)](https://nodei.co/npm/cc-znp/)  
 
@@ -65,7 +65,8 @@ znp.on('ready', function () {
 });
 
 znp.init(spCfg, function (err) {
-    console.log(err);
+    if (err)
+        console.log(err);
 });
 ```
 
@@ -85,12 +86,12 @@ Enable a serial port connecting to CC253X SoC with given `spCfg.path`.
 
 **Arguments:**  
 
-1. `spCfg` (_Object_): Configuration of the [seiralport](https://www.npmjs.com/package/serialport#to-use) instance. Accepted properties of `spCfg` are listed in the following table.  
+1. `spCfg` (_Object_): Configuration of the [seiralport](https://www.npmjs.com/package/serialport#usage) instance. Accepted properties of `spCfg` are listed in the following table.  
 
-    | Property     | Type    | Description                                                                                                             |
-    |--------------|---------|-------------------------------------------------------------------------------------------------------------------------|
-    | path         | String  | System path of the serial port to open. e.g., `/dev/ttyUSB0`.                                                           |
-    | options      | Object  | Port configuration [options](https://www.npmjs.com/package/serialport#serialport-path-options-openimmediately-callback).|
+    | Property     | Type    | Description                                                                                                  |
+    |--------------|---------|--------------------------------------------------------------------------------------------------------------|
+    | path         | String  | System path of the serial port to open. e.g., `/dev/ttyUSB0`.                                                |
+    | options      | Object  | Port configuration [options](https://www.npmjs.com/package/serialport#serialport-path-options-opencallback). |
 
 2. `callback` (_Function_): `function (err) { ... }`  
 
@@ -111,7 +112,8 @@ var spCfg = {
 };
 
 znp.init(spCfg, function (err) {
-    console.log(err);
+    if (err)
+        console.log(err);
 });
 ```
 
@@ -123,7 +125,7 @@ This method will close the opened serial port.
 
 **Arguments:**  
 
-1. `callback` (_Function_, optional): `function (err) { ... }`  
+1. `callback` (_Function_): `function (err) { ... }`  
 
 **Returns:**   
 
@@ -252,6 +254,7 @@ znp.send(2, 1, 0, new Buffer([ 0 ]));
 
 <a name="Events"></a>
 ## 6. Events  
+
 * [ready](#EVT_ready)  
 * [close](#EVT_close)  
 * [data](#EVT_data)  
@@ -305,7 +308,7 @@ The 'data' event will be fired along with the parsed result. Here is an example 
 ```
 
 **Examples:**  
-    
+
 ```js
 znp.on('data', function (data) {
     console.log(data);  // The parsed data
