@@ -18,7 +18,7 @@ The interface for a host to communicate with TI **CC**253X **Z**igBee **N**etwor
 3. [Installation](#Installation)  
 4. [Usage](#Usage)  
 5. [APIs](#APIs): init(), close(), request(), and sendCmd()  
-6. [Events](#Events): 'ready', 'colse', 'data', and 'AREQ'  
+6. [Events](#Events): 'ready', 'close', 'data', and 'AREQ'  
 7. [Z-Stack MT API Reference Tables](#ApiTables)  
 8. [Contributors](#Contributors)  
 9. [License](#License)  
