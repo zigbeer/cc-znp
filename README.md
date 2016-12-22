@@ -16,21 +16,25 @@ The interface for a host to communicate with TI **CC**253X **Z**igBee **N**etwor
 Please visit the [Wiki](https://github.com/zigbeer/cc-znp/wiki).
 
 <br />
+
 ## Overview  
 
 **cc-znp** allows you to interact with TI's CC253X ZigBee Network Processor(ZNP) on node.js via *TI Z-Stack Monitor and Test(MT) APIs* upon an UART interface.  
 
 <br />
+
 ## Installation  
 
 > $ npm install cc-znp --save
 
 <br />
+
 ## Usage  
 
 See [Usage](https://github.com/zigbeer/cc-znp/wiki#Usage) on the Wiki for details.  
 
 <br />
+  
 ## License  
 
 Licensed under [MIT](https://github.com/zigbeer/cc-znp/blob/master/LICENSE).  
