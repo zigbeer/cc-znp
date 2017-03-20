@@ -167,8 +167,8 @@ function randomArgForParse(type, name) {
             return testBuf;
         case 'longaddr':
             return '0x00124b00019c2ee9';
-        case 'preLenUint8':
-        case 'preLenUint16':
+        case '_preLenUint8':
+        case '_preLenUint16':
             preBufLen = chance.integer({min: 0, max: 200});
             return preBufLen;
         case 'preLenList':
@@ -223,12 +223,12 @@ function framer() {
                 dataBuf = dataBuf.buffer(new Buffer(val));
                 break;
             case 'uint8ZdoInd':
-            case 'preLenUint8':
+            case '_preLenUint8':
             case 'preLenList':
             case 'preLenBeaconlist':
                 dataBuf = dataBuf.uint8(val);
                 break;
-            case 'preLenUint16':
+            case '_preLenUint16':
                 dataBuf = dataBuf.uint16(val);
                 break;
             case 'longaddr':
