@@ -5071,5 +5071,23 @@
                 ]
             }
         }
+    },
+    "APPCONFIG": {
+        "bdbStartCommissioning": {
+            "type": 1,
+            "cmdId": 5,
+            "params": {
+                "req": [
+                    {
+                        "param": 0
+                    }
+                ],
+                "rsp": [
+                    {
+                        "status": 0
+                    }
+                ]
+            }
+        }
     }
 }
