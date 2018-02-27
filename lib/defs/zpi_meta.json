@@ -5079,7 +5079,7 @@
             "params": {
                 "req": [
                     {
-                        "param": 0
+                        "mode": 0
                     }
                 ],
                 "rsp": [
