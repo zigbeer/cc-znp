@@ -5072,7 +5072,7 @@
             }
         }
     },
-    "APPCONFIG": {
+    "DEBUG": {
         "bdbStartCommissioning": {
             "type": 1,
             "cmdId": 5,
