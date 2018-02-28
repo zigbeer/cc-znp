@@ -5071,5 +5071,23 @@
                 ]
             }
         }
+    },
+    "DEBUG": {
+        "bdbStartCommissioning": {
+            "type": 1,
+            "cmdId": 5,
+            "params": {
+                "req": [
+                    {
+                        "mode": 0
+                    }
+                ],
+                "rsp": [
+                    {
+                        "status": 0
+                    }
+                ]
+            }
+        }
     }
 }
