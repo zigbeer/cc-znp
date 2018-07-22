@@ -1,48 +1,59 @@
 {
-  "name": "cc-znp",
-  "version": "0.4.2",
-  "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor(ZNP) over a serial port.",
-  "main": "index.js",
-  "scripts": {
-    "test": "make test-all"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zigbeer/cc-znp.git"
-  },
-  "keywords": [
-    "zigbee",
-    "cc253x"
-  ],
-  "author": {
-    "name": "Jack Wu",
-    "email": "jackchased@gmail.com"
-  },
-  "contributors": [
-    {
-      "name": "Simen Li",
-      "email": "simenkid@gmail.com"
+    "name": "zigbee-bridge-znp",
+    "version": "0.4.2",
+    "license": "MIT",
+
+    "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor(ZNP) over a serial port.",
+
+    "main": "lib/ccznp.js",
+
+    "keywords": [
+        "zigbee",
+        "cc253x"
+    ],
+
+    "homepage": "https://github.com/open-zigbee/zigbee-bridge-znp#readme",
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/open-zigbee/zigbee-bridge-znp.git"
     },
-    {
-      "name": "Hedy Wang",
-      "email": "hedywings@gmail.com"
+
+    "bugs": {
+        "url": "https://github.com/open-zigbee/zigbee-bridge-znp/issues"
+    },
+
+    "author": {
+        "name": "Jack Wu",
+        "email": "jackchased@gmail.com"
+    },
+
+    "contributors": [
+        {
+            "name": "Simen Li",
+            "email": "simenkid@gmail.com"
+        },
+        {
+            "name": "Hedy Wang",
+            "email": "hedywings@gmail.com"
+        }
+    ],
+
+    "scripts": {
+        "test": "mocha -u bdd --reporter spec"
+    },
+
+    "dependencies": {
+        "debug": "^2.2.0",
+        "enum": "^2.3.0",
+        "serialport": "^4.0.1",
+        "stream-browserify": "^2.0.1",
+        "unpi": "^1.1.0"
+    },
+
+    "devDependencies": {
+        "chai": "^3.5.0",
+        "chance": "^1.0.4",
+        "mocha": "^2.5.3"
     }
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zigbeer/cc-znp/issues"
-  },
-  "homepage": "https://github.com/zigbeer/cc-znp#readme",
-  "dependencies": {
-    "debug": "^2.2.0",
-    "enum": "^2.3.0",
-    "serialport": "^4.0.1",
-    "stream-browserify": "^2.0.1",
-    "unpi": "^1.1.0"
-  },
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "chance": "^1.0.4",
-    "mocha": "^2.5.3"
-  }
 }

@@ -2,7 +2,7 @@ var expect = require('chai').expect,
     Chance = require('chance'),
     chance = new Chance();
 
-var ccznp = require('../index');
+var ccznp = require('../');
 
 describe('Signature Check', function () {
     it('ccznp.init(spCfg[, callback])', function () {
@@ -116,7 +116,7 @@ describe('Functional Check', function () {
         ccznp.request('SYS', 'ping', {}, function (err, result) {
             if (err)
                 console.log(err);
-            else if (result === rsp && ccznp._spinLock === false) 
+            else if (result === rsp && ccznp._spinLock === false)
                 done();
         });
         ccznp.emit('SRSP:SYS:ping', rsp);
