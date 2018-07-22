@@ -1,36 +1,36 @@
-var expect = require('chai').expect,
-    Chance = require('chance'),
-    chance = new Chance();
+const expect = require('chai').expect;
+const Chance = require('chance');
+const chance = new Chance();
 
-var Unpi = require('unpi'),
-    DChunks = Unpi.DChunks,
-    ru = DChunks().Rule();
+const Unpi = require('unpi');
+const DChunks = Unpi.DChunks;
+const ru = DChunks().Rule();
 
-var zmeta = require('../lib/zmeta'),
-    ZpiObject = require('../lib/zpiObject');
+const zmeta = require('../lib/zmeta');
+const ZpiObject = require('../lib/zpiObject');
 
-ru.clause('listbuffer', function (name) {
-    this.buffer(name, 2 * 3).tap(function () {
+ru.clause('listbuffer', function(name) {
+    this.buffer(name, 2 * 3).tap(function() {
         this.vars[name] = bufToArray(this.vars[name]);
     });
 });
 
-ru.clause('dynbuffer', function (name) {
+ru.clause('dynbuffer', function(name) {
     this.buffer(name, 6);
 });
 
-describe('#.frame', function () {
-    zmeta.Subsys.enums.forEach(function (subsysObj) {
-        var Subsys = subsysObj.key;
+describe('#.frame', function() {
+    zmeta.Subsys.enums.forEach(function(subsysObj) {
+        const Subsys = subsysObj.key;
 
         if (Subsys === 'RES0' || Subsys === 'NWK') return;
 
-        zmeta[Subsys].enums.forEach(function (zpiObject) {
-            var cmd = zpiObject.key,
-                argObj,
-                reqParams,
-                payload,
-                args = {};
+        zmeta[Subsys].enums.forEach(function(zpiObject) {
+            const cmd = zpiObject.key;
+            let argObj;
+            let reqParams;
+            let payload;
+            const args = {};
 
             argObj = new ZpiObject(Subsys, cmd);
             argObj.parser = parser;
@@ -38,7 +38,7 @@ describe('#.frame', function () {
             if (argObj.type === 'SREQ') {
                 reqParams = zmeta.getReqParams(Subsys, cmd);
 
-                reqParams.forEach(function (arg) {
+                reqParams.forEach(function(arg) {
                     arg.value = randomArgForFrame(arg.type);
                     args[arg.name] = arg.value;
                 });
@@ -46,8 +46,8 @@ describe('#.frame', function () {
                 argObj.args = reqParams;
                 payload = argObj.frame();
 
-                argObj.parser(payload, function (err, result) {
-                    it(argObj.cmd + ' framer check', function () {
+                argObj.parser(payload, function(err, result) {
+                    it(argObj.cmd + ' framer check', function() {
                         expect(result).to.eql(args);
                     });
                 });
@@ -57,9 +57,9 @@ describe('#.frame', function () {
 });
 
 function randomArgForFrame(type) {
-    var testBuf,
-        testArr,
-        k;
+    let testBuf;
+    let testArr;
+    let k;
 
     switch (type) {
         case 'uint8':
@@ -91,16 +91,17 @@ function randomArgForFrame(type) {
 }
 
 function parser(zBuf, callback) {
-    var chunkRules = [],
-        err,
-        rspParams,
-        parser;
+    const chunkRules = [];
+    let err;
+    let rspParams;
+    let parser;
 
     rspParams = zmeta.getReqParams(this.subsys, this.cmd);
 
-    if (rspParams) {    // [ { name, type }, ... ]
-        rspParams.forEach(function (arg) {
-            var rule = ru[arg.type];
+    // [ { name, type }, ... ]
+    if (rspParams) {
+        rspParams.forEach(function(arg) {
+            let rule = ru[arg.type];
             if (rule) {
                 rule = rule(arg.name, 6);
                 chunkRules.push(rule);
@@ -120,21 +121,23 @@ function parser(zBuf, callback) {
 
         parser = DChunks().join(chunkRules).compile();
 
-        parser.once('parsed', function (result) {
+        parser.once('parsed', function(result) {
             parser = null;
             callback(null, result);
         });
     }
 
-    if (!parser)    // error occurs, no parser created
+    // error occurs, no parser created
+    if (!parser) {
         callback(err);
-    else
+    } else {
         parser.end(zBuf);
+    }
 }
 
 function bufToArray(buf) {
-    var nipArr = [],
-        i;
+    const nipArr = [];
+    let i;
 
     for (i = 0; i < buf.length; i += 2) {
         nipArr.push('0x' + buf.readUInt16LE(i).toString(16));

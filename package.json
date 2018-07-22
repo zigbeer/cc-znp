@@ -40,7 +40,8 @@
     ],
 
     "scripts": {
-        "test": "mocha -u bdd --reporter spec"
+        "test": "mocha -u bdd --reporter spec",
+        "lint": "eslint ."
     },
 
     "dependencies": {
@@ -54,6 +55,9 @@
     "devDependencies": {
         "chai": "^3.5.0",
         "chance": "^1.0.4",
-        "mocha": "^2.5.3"
+        "mocha": "^2.5.3",
+
+        "eslint": "5.2.0",
+            "eslint-config-open-zigbee": "0.0.2r"
     }
 }

@@ -1,33 +1,33 @@
-var expect = require('chai').expect,
-    Chance = require('chance'),
-    chance = new Chance();
+const expect = require('chai').expect;
+const Chance = require('chance');
+const chance = new Chance();
 
-var Unpi = require('unpi'),
-    Concentrate = Unpi.Concentrate,
-    DChunks = Unpi.DChunks,
-    ru = DChunks().Rule();
+const Unpi = require('unpi');
+const Concentrate = Unpi.Concentrate;
+const DChunks = Unpi.DChunks;
+const ru = DChunks().Rule();
 
-var zmeta = require('../lib/zmeta'),
-    ZpiObject = require('../lib/zpiObject'),
-    preBufLen;
+const zmeta = require('../lib/zmeta');
+const ZpiObject = require('../lib/zpiObject');
+let preBufLen;
 
-ru.clause('dynbuffer', function (name) {
-    this.tap(function () {
+ru.clause('dynbuffer', function(name) {
+    this.tap(function() {
         this.vars[name] = this.vars.preLenData;
         delete this.vars.preLenData;
     });
 });
 
-ru.clause('nwklistbuffer', function (name, bufLen) {
-    this.buffer(name, bufLen - 6).tap(function () {
-        var buf = this.vars[name],
-            list = [],
-            listcount,
-            getList,
-            start = 0,
-            end,
-            len,
-            i;
+ru.clause('nwklistbuffer', function(name, bufLen) {
+    this.buffer(name, bufLen - 6).tap(function() {
+        const buf = this.vars[name];
+        const list = [];
+        let listcount;
+        let getList;
+        let start = 0;
+        let end;
+        let len;
+        let i;
 
         if (name === 'networklist') {
             listcount = buf.length / 12;
@@ -57,40 +57,45 @@ ru.clause('nwklistbuffer', function (name, bufLen) {
     });
 });
 
-describe('#.parse', function () {
-    zmeta.Subsys.enums.forEach(function (subsysObj) {
-        var subsys = subsysObj.key;
+describe('#.parse', function() {
+    zmeta.Subsys.enums.forEach(function(subsysObj) {
+        const subsys = subsysObj.key;
 
         if (subsys === 'RES0' || subsys === 'NWK') return;
 
-        zmeta[subsys].enums.forEach(function (zpiObject) {
-            var cmd = zpiObject.key,
-                argObj,
-                rspParams,
-                payload,
-                args = {};
+        zmeta[subsys].enums.forEach(function(zpiObject) {
+            const cmd = zpiObject.key;
+            let argObj;
+            let rspParams;
+            let payload;
+            let args = {};
 
-            if (subsys === 'SYS' && cmd === 'resetReq') return;  // AREQ from host
-            if (subsys === 'DBG' && cmd === 'msg') return;       // AREQ from host
+            // AREQ from host
+            if (subsys === 'SYS' && cmd === 'resetReq') return;
+            // AREQ from host
+            if (subsys === 'DBG' && cmd === 'msg') return;
 
             argObj = new ZpiObject(subsys, cmd);
             argObj.framer = framer;
 
-            if (argObj.type === 'SREQ') {           // SRSP
+            // SRSP
+            if (argObj.type === 'SREQ') {
                 rspParams = zmeta.getRspParams(subsys, cmd);
                 argObj.type = 'SRSP';
-            } else if (argObj.type === 'AREQ') {    // AREQ
+
+            // AREQ
+            } else if (argObj.type === 'AREQ') {
                 rspParams = zmeta.getReqParams(subsys, cmd);
             }
 
-            rspParams.forEach(function (arg) {
+            rspParams.forEach(function(arg) {
                 arg.value = randomArgForParse(arg.type, arg.name);
 
                 if (arg.type === 'devlistbuffer') {
                     args[arg.name] = bufToArray(arg.value, 'uint16');
                 } else if (arg.type === 'nwklistbuffer') {
                     args[arg.name] = bufToList(arg.value, arg.name);
-                } else if (arg.name === 'beaconlist'){
+                } else if (arg.name === 'beaconlist') {
                     args[arg.name] = bufToList(arg.value, arg.name);
                 } else {
                     args[arg.name] = arg.value;
@@ -100,8 +105,8 @@ describe('#.parse', function () {
             argObj.args = rspParams;
             payload = argObj.framer();
 
-            argObj.parse(argObj.type, payload.length, payload, function (err, result) {
-                it(argObj.cmd + ' parser check', function () {
+            argObj.parse(argObj.type, payload.length, payload, function(err, result) {
+                it(argObj.cmd + ' parser check', function() {
                     expect(result).to.eql(args);
                 });
             });
@@ -110,10 +115,9 @@ describe('#.parse', function () {
 });
 
 function randomArgForParse(type, name) {
-    var bufLen,
-        testBuf,
-        testArr,
-        k;
+    let bufLen;
+    let testBuf;
+    let k;
 
     switch (type) {
         case 'uint8':
@@ -138,28 +142,31 @@ function randomArgForParse(type, name) {
             return testBuf;
         case 'buffer':
         case 'devlistbuffer':
-            bufLen = chance.integer({min: 0, max: 128}) * 2;  // MT CMD Max 256bytes
+            // MT CMD Max 256bytes
+            bufLen = chance.integer({min: 0, max: 128}) * 2;
             testBuf = new Buffer(bufLen);
             for (k = 0; k < bufLen; k += 1) {
                 testBuf[k] = chance.integer({min: 0, max: 255});
             }
             return testBuf;
         case 'nwklistbuffer':
-            if (name === 'networklist')
+            if (name === 'networklist') {
                 bufLen = chance.integer({min: 0, max: 20}) * 12;
-            else if (name === 'neighborlqilist')
+            } else if (name === 'neighborlqilist') {
                 bufLen = chance.integer({min: 0, max: 10}) * 22;
-            else if (name === 'routingtablelist')
+            } else if (name === 'routingtablelist') {
                 bufLen = chance.integer({min: 0, max: 20}) * 5;
-            else if (name === 'bindingtablelist')
+            } else if (name === 'bindingtablelist') {
                 bufLen = chance.integer({min: 0, max: 10}) * 21;
+            }
             testBuf = new Buffer(bufLen);
             for (k = 0; k < bufLen; k += 1) {
                 testBuf[k] = chance.integer({min: 0, max: 255});
             }
             return testBuf;
         case 'zdomsgcb':
-            bufLen = chance.integer({min: 0, max: 200});      // MT CMD Max 256bytes
+            // MT CMD Max 256bytes
+            bufLen = chance.integer({min: 0, max: 200});
             testBuf = new Buffer(bufLen);
             for (k = 0; k < bufLen; k += 1) {
                 testBuf[k] = chance.integer({min: 0, max: 255});
@@ -194,14 +201,15 @@ function randomArgForParse(type, name) {
 }
 
 function framer() {
-    if (!Array.isArray(this.args))  // no args, cannot build frame
-        return null;
+    // no args, cannot build frame
+    if (!Array.isArray(this.args)) return null;
 
-    var dataBuf = Concentrate();
+    let dataBuf = Concentrate();
 
-    this.args.forEach(function (arg, idx) { // arg: { name, type, value }
-        var type = arg.type,
-            val = arg.value;
+    // arg: { name, type, value }
+    this.args.forEach(function(arg, idx) {
+        const type = arg.type;
+        const val = arg.value;
 
         switch (type) {
             case 'uint8':
@@ -232,8 +240,8 @@ function framer() {
                 dataBuf = dataBuf.uint16(val);
                 break;
             case 'longaddr':
-                var msb = parseInt(val.slice(2,10), 16),
-                    lsb = parseInt(val.slice(10), 16);
+                const msb = parseInt(val.slice(2, 10), 16);
+                const lsb = parseInt(val.slice(10), 16);
 
                 dataBuf = dataBuf.uint32le(lsb).uint32le(msb);
                 break;
@@ -249,13 +257,13 @@ function framer() {
 }
 
 function bufToList(buf, listType) {
-    var list = [],
-        listcount,
-        getList,
-        start = 0,
-        end,
-        len,
-        i;
+    let list = [];
+    let listcount;
+    let getList;
+    let start = 0;
+    let end;
+    let len;
+    let i;
 
     if (listType === 'networklist') {
         listcount = buf.length / 12;
@@ -269,7 +277,7 @@ function bufToList(buf, listType) {
         listcount = buf.length / 5;
         end = len = 5;
         getList = routingTableList;
-    } else if (listType === 'bindingtablelist'){
+    } else if (listType === 'bindingtablelist') {
         listcount = buf.length / 21;
         list = bindTableList(buf, listcount);
         return list;
@@ -289,8 +297,8 @@ function bufToList(buf, listType) {
 }
 
 function networkList(buf) {
-    var item = {},
-        i = 0;
+    const item = {};
+    let i = 0;
 
     item.neightborPanId = buf.readUInt16LE(i);
     i += (2+6);
@@ -309,8 +317,8 @@ function networkList(buf) {
 }
 
 function neighborLqiList(buf) {
-    var item = {},
-        i = 0;
+    const item = {};
+    let i = 0;
 
     item.extPandId = addrBuf2Str(buf.slice(0, 8));
     i += 8;
@@ -333,8 +341,8 @@ function neighborLqiList(buf) {
 }
 
 function routingTableList(buf) {
-    var item = {},
-        i = 0;
+    const item = {};
+    let i = 0;
 
     item.destNwkAddr = buf.readUInt16LE(i);
     i += 2;
@@ -347,21 +355,21 @@ function routingTableList(buf) {
 }
 
 function bindTableList(buf, listcount) {
-    var itemObj,
-        list = [],
-        len = 21,
-        start = 0,
-        end = len,
-        i;
+    let itemObj;
+    const list = [];
+    let len = 21;
+    let start = 0;
+    let end = len;
+    let i;
 
     function getList(buf) {
-        var itemObj = {
-                item: {},
-                thisItemLen: 0
-            },
-            itemLen = 21,
-            item = {},
-            i = 0;
+        const itemObj = {
+            item: {},
+            thisItemLen: 0,
+        };
+        let itemLen = 21;
+        let item = {};
+        let i = 0;
 
         item.srcAddr = addrBuf2Str(buf.slice(0, 8));
         i += 8;
@@ -374,7 +382,8 @@ function bindTableList(buf, listcount) {
         item.dstAddr = addrBuf2Str(buf.slice(12, 20));
         i += 8;
 
-        if (item.dstAddrMode === 3) {  // 'Addr64Bit'
+        // 'Addr64Bit'
+        if (item.dstAddrMode === 3) {
             item.dstEp = buf.readUInt8(i);
             i += 1;
         } else {
@@ -391,10 +400,14 @@ function bindTableList(buf, listcount) {
         list.push(itemObj.item);
 
         start = start + itemObj.thisItemLen;
-        if (i === listcount - 2) {  // for the last item, we don't know the length of bytes
-            end = buf.length;       // so, assign 'end' by the buf length to avoid memory leak.
+
+        // for the last item, we don't know the length of bytes
+        // so, assign 'end' by the buf length to avoid memory leak.
+        // for each item, take 21 bytes from buf to parse
+        if (i === listcount - 2) {
+            end = buf.length;
         } else {
-            end = start + len;      // for each item, take 21 bytes from buf to parse
+            end = start + len;
         }
     }
 
@@ -402,8 +415,8 @@ function bindTableList(buf, listcount) {
 }
 
 function beaconList(buf) {
-    var item = {},
-        i = 0;
+    let item = {};
+    let i = 0;
 
     item.srcAddr = buf.readUInt16LE(i);
     i += 2;
@@ -434,11 +447,11 @@ function beaconList(buf) {
 }
 
 function addrBuf2Str(buf) {
-    var bufLen = buf.length,
-        val,
-        strChunk = '0x';
+    const bufLen = buf.length;
+    let val;
+    let strChunk = '0x';
 
-    for (var i = 0; i < bufLen; i += 1) {
+    for (let i = 0; i < bufLen; i += 1) {
         val = buf.readUInt8(bufLen - i - 1);
         if (val <= 15) {
             strChunk += '0' + val.toString(16);
@@ -451,8 +464,9 @@ function addrBuf2Str(buf) {
 }
 
 function bufToArray(buf, nip) {
-    var i,
-        nipArr = [];
+    let i;
+    const nipArr = [];
+
     if (nip === 'uint8') {
         for (i = 0; i < buf.length; i += 1) {
             nipArr.push(buf.readUInt8(i));
