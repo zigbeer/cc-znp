@@ -1,6 +1,6 @@
 {
   "name": "cc-znp",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "The interface for a host to communicate with TI CC253X Zigbee Network Processor(ZNP) over a serial port.",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,7 @@
   "dependencies": {
     "debug": "^2.6.9",
     "enum": "^2.5.0",
-    "serialport": "^6.2.2",
+    "serialport": "^7.1.5",
     "stream-browserify": "^2.0.1",
     "unpi": "^1.1.0"
   },
